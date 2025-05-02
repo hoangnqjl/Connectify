@@ -1,0 +1,155 @@
+/* Thiết lập font và reset mặc định */
+body {
+    margin: 0;
+    font-family: Inter, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url("/resources/image/background.png"); /* or .png */
+    background-size: cover;
+    background-position: center;
+}
+
+
+
+ Container chính
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden; /* Đảm bảo nội dung bên trong không bị tràn ra ngoài */
+}
+
+
+form {
+    display: flex;
+    flex-direction: column; /* Xếp các phần tử theo chiều dọc */
+    gap: 12px; /* Tạo khoảng cách giữa các phần tử */
+}
+
+/* Hộp đăng nhập */
+/*.login-box {*/
+/*    background: rgba(0,0,0, 0.3);*/
+/*    backdrop-filter: blur(50px);*/
+/*    padding: 30px;*/
+/*    border-radius: 35px;*/
+/*    max-width: 350px;*/
+/*    width: 100%;*/
+/*}*/
+
+/* Logo */
+
+.login-box h2 {
+    margin-bottom: 20px;
+    margin-left: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2D64FF;
+}
+
+/* Mô tả */
+.login-box p {
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Nhóm input */
+
+.input-group
+{
+    height: 35px;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 500px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 350px;
+}
+#email {
+    background: transparent;
+}
+
+#email::placeholder {
+    color: #3F3F46; /* hoặc color: white; */
+    opacity: 0.2;   /* 50% opacity */
+}
+
+#password {
+    background: transparent;
+}
+
+#password::placeholder {
+    color: #3F3F46; /* hoặc color: white; */
+    opacity: 0.2;   /* 50% opacity */
+}
+
+/* Icon trong input */
+
+.icon {
+    width: 45px;
+    height: 45px;
+    margin-left: -3px;
+    font-size: 10px;
+    margin-right: 8px;
+}
+
+
+/* Ô nhập liệu */
+.input-group input {
+    background: rgba(0,0,0, 0.2);
+    border: none;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    /*height: 500px;*/
+    color: #3F3F46;
+}
+
+/* Nút đăng nhập */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 500px;
+    background: rgba(255, 255, 255, 0.5);
+    color: #2D64FF;
+    height: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.login-btn:hover {
+    background: #D9E6FF;
+}
+
+ /*Văn bản đăng ký */
+.signup-text {
+    padding-top: 10px;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    text-align: center;
+}
+
+.signup-text a:visited {
+    color: #ffffff; /* Giữ nguyên màu khi đã click */
+}
+
+.signup-text:hover {
+    color: #ffffff;
+}
+
+.error-message{
+    color: crimson;
+    font-weight: lighter;
+    padding-top: 15px;
+    font-size: 15px;
+}
