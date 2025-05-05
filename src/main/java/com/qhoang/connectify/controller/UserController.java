@@ -1,9 +1,11 @@
 package com.qhoang.connectify.controller;
 
 import com.qhoang.connectify.dao.UserDao;
+import com.qhoang.connectify.entities.User;
 import com.qhoang.connectify.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +15,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @CrossOrigin(origins = "*")
-@RestController
+@Controller
 @RequestMapping("/auth")
 public class UserController {
 
@@ -30,18 +32,19 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password, Model model, HttpServletResponse response) {
         boolean valid = userDao.retrieveUser(email, password);
+        User user = userDao.findByEmail(email);
 
         if (valid) {
-            String token = jwtUtil.generateToken(email);
+            String token = jwtUtil.generateToken(user.getUser_id());
 
             Cookie cookie = new Cookie("jwt", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setMaxAge(3600);
+            cookie.setHttpOnly(false);
+            cookie.setSecure(false);
+            cookie.setMaxAge(60 * 60 * 24 * 365);
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            return "/";
+            return "redirect:/home";
         } else {
             model.addAttribute("errorMessage", "Sai thông tin đăng nhập");
             return "auth/login";

@@ -5,8 +5,10 @@ import java.util.Date;
 public class User {
     private String user_id, fullname, username, email, phonenumber, password, avatar;
     private Date birthday, created_at, updated_at;
+    private String status;
+    private String type;
 
-    public User(String user_id, String fullname, String username, String email, String phonenumber, String password, Date birthday, Date created_at, Date updated_at, String avatar) {
+    public User(String user_id, String fullname, String username, String email, String phonenumber, String password, Date birthday, Date created_at, Date updated_at, String avatar, String status, String type) {
         this.user_id = user_id;
         this.fullname = fullname;
         this.username = username;
@@ -17,6 +19,24 @@ public class User {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.avatar = avatar;
+        this.status = "active";
+        this.type = "user";
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public User(String user_id, String fullname, String username, String email, String phonenumber, String password, Date birthday) {

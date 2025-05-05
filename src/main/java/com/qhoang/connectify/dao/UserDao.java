@@ -4,9 +4,10 @@ import com.qhoang.connectify.entities.User;
 import com.qhoang.connectify.utils.DBUtils;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class UserDao {
@@ -80,6 +81,60 @@ public class UserDao {
         }
         return null;
     }
+
+    public User findByUserId(String user_id) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        try {
+            Connection con = DBUtils.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, user_id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setUser_id(rs.getString("user_id"));
+                user.setFullname(rs.getString("fullname"));
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPhonenumber(rs.getString("phonenumber"));
+                user.setPassword(rs.getString("password"));
+                user.setBirthday(rs.getDate("birthday"));
+                user.setAvatar(rs.getString("avatar"));
+                user.setCreated_at(rs.getTimestamp("created_at"));
+                user.setUpdated_at(rs.getTimestamp("updated_at"));
+                return user;
+            }
+        } catch (Exception e) {
+            System.out.printf("Error in finding user by email: %s\n", e.getMessage());
+        }
+        return null;
+    }
+
+
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT * FROM users"; // Giả sử bảng người dùng có tên là 'users'
+
+        try (Connection con = DBUtils.getConnection();
+             Statement statement = con.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                User user = new User();
+                user.setUser_id(resultSet.getString("user_id")); // Thay "id" bằng "user_id" nếu trong bảng là "user_id"
+                user.setFullname(resultSet.getString("fullname"));
+                user.setAvatar(resultSet.getString("avatar"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.printf("Error in retrieving all users: %s\n", e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
+    }
+
 
 
 }
