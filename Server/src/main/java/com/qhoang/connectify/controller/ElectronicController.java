@@ -226,6 +226,18 @@ public class ElectronicController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getElectronicById(@PathVariable("id") String id) {
+        Electronic electronic = electronicService.getElectronicById(id);
+        if (electronic == null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", "Not Found");
+            response.put("message", "Không tìm thấy sản phẩm với ID: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        return ResponseEntity.ok(electronic);
+    }
+
 
 
 }
