@@ -23,14 +23,14 @@ public class BrandController {
     // GET all brands
     @GetMapping
     public ResponseEntity<List<Brand>> getAllBrands() {
-        List<Brand> brands = brandRepository.getAllBrands();
+        List<Brand> brands = brandRepository.findAll();  // Sử dụng findAll() từ JpaRepository
         return ResponseEntity.ok(brands);
     }
 
     // POST new brand
     @PostMapping
-    public ResponseEntity<?> addBrand(@RequestBody Brand brand) {
-        brandRepository.addBrand(brand);
+    public ResponseEntity<String> addBrand(@RequestBody Brand brand) {
+        brandRepository.save(brand);  // Sử dụng save() từ JpaRepository
         return ResponseEntity.status(HttpStatus.CREATED).body("Brand added successfully");
     }
 }

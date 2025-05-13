@@ -22,14 +22,14 @@ public class CategoryController {
     // Endpoint trả về tất cả danh mục
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryRepository.getAllCategories();  // Gọi phương thức để lấy tất cả categories
+        List<Category> categories = categoryRepository.findAll();  // Sử dụng Spring Data JPA để lấy tất cả categories
         return ResponseEntity.ok(categories);  // Trả về danh sách categories dưới dạng JSON
     }
 
-//    // Endpoint thêm một category mới
-//    @PostMapping
-//    public ResponseEntity<?> addCategory(@RequestBody Category category) {
-//        categoryRepository.insertCategory(category);  // Gọi phương thức để thêm category vào DB
-//        return ResponseEntity.status(201).body("Category added successfully");
-//    }
+    // Endpoint thêm một category mới
+    @PostMapping
+    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
+        Category savedCategory = categoryRepository.save(category);  // Sử dụng Spring Data JPA để lưu category vào DB
+        return ResponseEntity.status(201).body(savedCategory);  // Trả về category đã được lưu với mã trạng thái 201
+    }
 }

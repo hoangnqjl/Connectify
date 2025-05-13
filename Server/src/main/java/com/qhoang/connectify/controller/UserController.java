@@ -1,7 +1,7 @@
 package com.qhoang.connectify.controller;
 
 import com.qhoang.connectify.entities.User;
-import com.qhoang.connectify.repository.UserRepository;
+import com.qhoang.connectify.service.UserService;
 import com.qhoang.connectify.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -14,12 +14,12 @@ import java.util.Collections;
 @RequestMapping("/auth")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
         this.jwtUtil = new JwtUtil();
     }
 
@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestParam("email") String email,
                                    @RequestParam("password") String password) {
         // Kiểm tra thông tin người dùng hợp lệ
-        User user = userRepository.findByEmail(email);  // Sử dụng UserRepository để tìm người dùng
+        User user = userService.getUserByEmail(email);  // Sử dụng UserService để tìm người dùng
         if (user != null && user.getPassword().equals(password)) {
             // Lấy user_id từ đối tượng User
             String userId = user.getUserId();
@@ -52,7 +52,7 @@ public class UserController {
                                     @RequestParam("password") String password) {
 
         // Kiểm tra xem email đã tồn tại chưa
-        if (userRepository.findByEmail(email) != null) {
+        if (userService.getUserByEmail(email) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("error", "Email đã được sử dụng"));
         }
@@ -60,23 +60,21 @@ public class UserController {
         // Tạo user_id và khởi tạo đối tượng User
         String userId = "user_" + System.currentTimeMillis(); // Hoặc dùng UUID nếu muốn
         User user = new User();
-        user.setUserId(userId);
         String[] parts = fullname.trim().toLowerCase().split("\\s+");
         String lastName = parts[parts.length - 1];
         char firstInitial = parts[0].charAt(0);
 
         String username = lastName + firstInitial;
+        user.setUserId(userId);
         user.setUsername(username);
         user.setFullname(fullname);
         user.setEmail(email);
         user.setPhonenumber(phonenumber);
         user.setPassword(password);
         user.setAvatar(null);
-//        user.setCreated_at(null);
-//        user.setUpdated_at(null);
 
         // Lưu người dùng vào cơ sở dữ liệu
-        userRepository.save(user);
+        userService.saveUser(user);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Collections.singletonMap("message", "Đăng ký thành công"));
@@ -90,7 +88,7 @@ public class UserController {
 
         if (jwtUtil.validateToken(token)) {
             String userId = jwtUtil.extractUsername(token);
-            User user = userRepository.findByUserId(userId);  // Sử dụng UserRepository để tìm người dùng theo userId
+            User user = userService.getUserByUserId(userId);  // Sử dụng UserService để tìm người dùng theo userId
 
             if (user != null) {
                 return ResponseEntity.ok(user); // Trả về thông tin user

@@ -3,13 +3,11 @@ package com.qhoang.connectify.controller;
 import com.qhoang.connectify.entities.Brand;
 import com.qhoang.connectify.entities.Category;
 import com.qhoang.connectify.entities.Electronic;
-import com.qhoang.connectify.repository.ElectronicRepository;
+import com.qhoang.connectify.service.ElectronicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.GsonBuilderUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,17 +19,17 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/electronics")
+@RequestMapping("/electronics") // đường dẫn đầu
 public class ElectronicController {
 
     @Autowired
-    private ElectronicRepository electronicRepository;
+    private ElectronicService electronicService;
 
     private final String UPLOAD_DIR = "D:/Project/ConnectifyShop/Data/";
 
     @GetMapping
     public ResponseEntity<List<Electronic>> getAll() {
-        return ResponseEntity.ok(electronicRepository.getAllElectronics());
+        return ResponseEntity.ok(electronicService.getAllElectronics());
     }
 
     // them san pham
@@ -106,7 +104,7 @@ public class ElectronicController {
         electronic.setStatus(status);
         electronic.setImage(imagePath);
 
-        electronicRepository.insertElectronic(electronic);
+        electronicService.insertElectronic(electronic);
         return ResponseEntity.ok(electronic);
     }
 
@@ -129,7 +127,7 @@ public class ElectronicController {
         Map<String, Object> response = new HashMap<>();
 
         // Tìm sản phẩm theo ID
-        Electronic existing = electronicRepository.getElectronicById(id);
+        Electronic existing = electronicService.getElectronicById(id);
         if (existing == null) {
             response.put("error", "Not Found");
             response.put("message", "Không tìm thấy sản phẩm với ID: " + id);
@@ -183,7 +181,7 @@ public class ElectronicController {
             }
         }
 
-        electronicRepository.updateElectronic(existing);
+        electronicService.updateElectronic(existing);
 
         response.put("message", "Cập nhật dữ liệu thành công");
         response.put("data", existing);
@@ -194,7 +192,7 @@ public class ElectronicController {
     // tìm kiếm
     @GetMapping("/search")
     public ResponseEntity<List<Electronic>> searchElectronics(@RequestParam("keyword") String keyword) {
-        List<Electronic> results = electronicRepository.searchElectronics(keyword);
+        List<Electronic> results = electronicService.searchElectronics(keyword);
         if (results.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -205,7 +203,7 @@ public class ElectronicController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteElectronic(@PathVariable("id") String id) {
         Map<String, Object> response = new HashMap<>();
-        Electronic existing = electronicRepository.getElectronicById(id);
+        Electronic existing = electronicService.getElectronicById(id);
         if (existing == null) {
             response.put("msg", "Không tìm thấy sản phẩm");
             response.put("id", id);
@@ -224,7 +222,7 @@ public class ElectronicController {
         response.put("msg", "Đã xóa sản phẩm thành công");
         response.put("id", id);
 
-        electronicRepository.deleteElectronic(id);
+        electronicService.deleteElectronic(id);
         return ResponseEntity.ok(response);
     }
 

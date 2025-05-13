@@ -3,6 +3,10 @@ package com.qhoang.connectify.controller;
 
 import com.qhoang.connectify.entities.*;
 import com.qhoang.connectify.repository.*;
+import com.qhoang.connectify.service.CartItemService;
+import com.qhoang.connectify.service.CartService;
+import com.qhoang.connectify.service.ElectronicService;
+import com.qhoang.connectify.service.UserService;
 import com.qhoang.connectify.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -23,27 +27,28 @@ public class CartController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userSevice;
 
     @Autowired
-    private ElectronicRepository electronicRepository;
+    private ElectronicService electronicService;
 
     @Autowired
-    private CartRepository cartRepository;
+    private CartService cartService;
 
     @Autowired
-    private CartItemRepository cartItemRepository;
+    private CartItemService cartItemService;
 
     private User extractUserFromToken(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         if (jwtUtil.validateToken(token)) {
             String userId = jwtUtil.extractUsername(token);
-            return userRepository.findByUserId(userId);
+            return userSevice.getUserByUserId(userId);
         }
         return null;
     }
 
     @PostMapping("/add")
+    @Transactional
     public ResponseEntity<?> addToCart(
             @RequestHeader("Authorization") String authHeader,
             @RequestParam("electronicId") String electronicId,
@@ -57,17 +62,17 @@ public class CartController {
         }
 
         // Lấy hoặc tạo cart
-        Cart cart = cartRepository.findCartByUser(user);
+        Cart cart = cartService.getCartByUser(user);
         if (cart == null) {
             cart = new Cart(user);
             cart.setCart_id(cart.generateCartId(user));
-            cartRepository.saveCart(cart);
+            cartService.saveCart(cart);
         }
 
 
 
         // Tìm sản phẩm
-        Electronic electronic = electronicRepository.getElectronicById(electronicId);
+        Electronic electronic = electronicService.getElectronicById(electronicId);
         if (electronic == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("error", "Không tìm thấy sản phẩm"));
@@ -79,7 +84,7 @@ public class CartController {
         cartItem.setElectronic(electronic);
         cartItem.setQuantity(quantity);
 
-        cartItemRepository.saveCartItem(cartItem);
+        cartItemService.saveCartItem(cartItem);
 
         return ResponseEntity.ok(Collections.singletonMap("message", "Đã thêm vào giỏ hàng"));
     }
@@ -99,7 +104,7 @@ public class CartController {
         }
 
         // Lấy giỏ hàng của người dùng
-        Cart cart = cartRepository.findCartByUser(user);
+        Cart cart = cartService.getCartByUser(user);
         if (cart == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("error", "Không tìm thấy giỏ hàng"));

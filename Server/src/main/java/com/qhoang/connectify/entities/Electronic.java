@@ -14,9 +14,9 @@ public class Electronic {
     @JoinColumn(name = "cat_id", referencedColumnName = "cat_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id", referencedColumnName = "brand_id")
-    private Brand brand;
+    @ManyToOne // ánh xạ tới brand_id để mapping
+    @JoinColumn(name = "brand_id", referencedColumnName = "brand_id") // biến trong database
+    private Brand brand; // biến của json
 
     @Column(name = "name")
     private String name;

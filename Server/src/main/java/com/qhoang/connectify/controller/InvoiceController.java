@@ -2,8 +2,9 @@ package com.qhoang.connectify.controller;
 
 import com.qhoang.connectify.entities.Invoice;
 import com.qhoang.connectify.entities.User;
-import com.qhoang.connectify.repository.InvoiceRepository;
+import com.qhoang.connectify.service.InvoiceService;
 import com.qhoang.connectify.repository.UserRepository;
+import com.qhoang.connectify.service.UserService;
 import com.qhoang.connectify.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -15,37 +16,31 @@ import java.util.*;
 @RequestMapping("/invoices")
 @CrossOrigin(origins = "*")
 public class InvoiceController {
+
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserRepository userRepository;
-
+    private InvoiceService invoiceService;
     @Autowired
-    private final InvoiceRepository invoiceRepository;
+    private UserService userService;
 
     private User extractUserFromToken(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         if (jwtUtil.validateToken(token)) {
             String userId = jwtUtil.extractUsername(token);
-            return userRepository.findByUserId(userId);
+            return userService.getUserByUserId(userId);
         }
         return null;
-    }
-
-    @Autowired
-    public InvoiceController(InvoiceRepository invoiceRepository) {
-        this.invoiceRepository = invoiceRepository;
     }
 
     // GET all invoices
     @GetMapping
     public ResponseEntity<List<Invoice>> getAllInvoices() {
-        List<Invoice> invoices = invoiceRepository.getAllInvoices();
+        List<Invoice> invoices = invoiceService.getAllInvoices();
         if (invoices.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null); // Trả về 204 nếu không có hóa đơn
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
-        System.out.println("danh sach" + invoices);
         return ResponseEntity.ok(invoices);
     }
 
@@ -53,13 +48,12 @@ public class InvoiceController {
     @GetMapping("/user")
     public ResponseEntity<?> getInvoicesByUserId(@RequestHeader("Authorization") String authHeader) {
         User user = extractUserFromToken(authHeader);
-
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Collections.singletonMap("error", "Token không hợp lệ hoặc không tìm thấy người dùng"));
         }
 
-        List<Invoice> invoices = invoiceRepository.getInvoicesByUserId(user.getUserId());
+        List<Invoice> invoices = invoiceService.getInvoicesByUserId(user.getUserId());
 
         if (invoices.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -78,18 +72,15 @@ public class InvoiceController {
             @RequestParam String status,
             @RequestHeader("Authorization") String authHeader) {
 
-        // Lấy user từ JWT
         User user = extractUserFromToken(authHeader);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Collections.singletonMap("error", "Token không hợp lệ hoặc không tìm thấy người dùng"));
         }
 
-
         int random_number = 1000 + new Random().nextInt(9000);
         String invoiceId = "hd@" + user.getUserId() + random_number;
 
-        // Tạo đối tượng Invoice
         Invoice invoice = new Invoice();
         invoice.setInvoiceId(invoiceId);
         invoice.setUser(user);
@@ -99,8 +90,7 @@ public class InvoiceController {
         invoice.setTotalPrice(totalPrice);
         invoice.setStatus(status);
 
-        // Lưu hóa đơn vào cơ sở dữ liệu
-        invoiceRepository.insertInvoice(invoice);
+        invoiceService.addInvoice(invoice);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Tạo hóa đơn thành công");
@@ -109,14 +99,14 @@ public class InvoiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
-
     // PUT update invoice status
     @PostMapping("/{invoiceId}/status")
     public ResponseEntity<?> updateInvoiceStatus(@PathVariable String invoiceId, @RequestParam String status) {
-        invoiceRepository.updateInvoiceStatus(invoiceId, status);
-        return ResponseEntity.ok("Invoice status updated successfully");
+        boolean updated = invoiceService.updateInvoiceStatus(invoiceId, status);
+        if (updated) {
+            return ResponseEntity.ok("Invoice status updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn cần cập nhật");
+        }
     }
-
-
 }
