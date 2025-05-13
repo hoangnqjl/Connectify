@@ -66,7 +66,7 @@
     &quot;Tomcat Server.Connectify.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;&lt;unknown&gt;&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Project/ConnectifyShop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Project/ConnectifyShop/Server&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -453,7 +453,9 @@
       <workItem from="1746693555528" duration="7366000" />
       <workItem from="1746708289219" duration="4825000" />
       <workItem from="1746890152499" duration="3526000" />
-      <workItem from="1746927366383" duration="5311000" />
+      <workItem from="1746927366383" duration="5579000" />
+      <workItem from="1746970512286" duration="1114000" />
+      <workItem from="1747053167310" duration="14000" />
     </task>
     <servers />
   </component>

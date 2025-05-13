@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // Đảm bảo đường dẫn trỏ đến thư mục uploads trong webapp
-        registry.addResourceHandler("/resources/uploads/**")
-                .addResourceLocations("file:./resources/uploads/");
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:D:/Project/ConnectifyShop/Data/");
     }
 }

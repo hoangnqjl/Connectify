@@ -40,7 +40,29 @@ public class ElectronicRepository {
         }
     }
 
+    @Transactional
     public Electronic getElectronicById(String id) {
         return entityManager.find(Electronic.class, id);
+    }
+
+    @Transactional
+    public List<Electronic> searchElectronics(String keyword) {
+        String jpql = "SELECT e FROM Electronic e WHERE " +
+                "e.name LIKE :keyword OR " +
+                "e.cpu LIKE :keyword OR " +
+                "e.ram LIKE :keyword OR " +
+                "e.gpu LIKE :keyword OR " +
+                "e.material LIKE :keyword OR " +
+                "e.powerRating LIKE :keyword OR " +
+                "e.operatingSystem LIKE :keyword OR " +
+                "e.storageCapacity LIKE :keyword OR " +
+                "e.batteryLife LIKE :keyword OR " +
+                "e.manufactureYear LIKE :keyword OR " +
+                "e.description LIKE :keyword";
+
+        TypedQuery<Electronic> query = entityManager.createQuery(jpql, Electronic.class);
+        query.setParameter("keyword", "%" + keyword + "%");
+
+        return query.getResultList();
     }
 }

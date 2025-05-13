@@ -24,6 +24,15 @@ public class Electronic {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "cpu")
+    private String cpu;
+
+    @Column(name = "ram")
+    private String ram;
+
+    @Column(name = "gpu")
+    private String gpu;
+
     @Column(name = "material")
     private String material;
 
@@ -50,6 +59,9 @@ public class Electronic {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "status")
+    private String status;
 
     public Electronic() {
     }
@@ -184,5 +196,37 @@ public class Electronic {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
+    }
+
+    public String getRam() {
+        return ram;
+    }
+
+    public void setRam(String ram) {
+        this.ram = ram;
+    }
+
+    public String getGpu() {
+        return gpu;
+    }
+
+    public void setGpu(String gpu) {
+        this.gpu = gpu;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
