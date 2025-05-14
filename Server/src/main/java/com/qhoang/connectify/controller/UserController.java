@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+        origins = "http://localhost:8000" // frontend của bạn
+//        allowedHeaders = "*",
+//        exposedHeaders = "Authorization",
+//        allowCredentials = "true"
+)
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -101,4 +106,37 @@ public class UserController {
                     .body(Collections.singletonMap("error", "Token không hợp lệ"));
         }
     }
+
+
+    // Lấy tất cả người dùng (chỉ admin mới xem được)
+    @GetMapping("/all-users")
+    public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+
+        // Xác thực token
+        if (!jwtUtil.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("error", "Token không hợp lệ"));
+        }
+
+        // Trích xuất userId từ token
+        String userId = jwtUtil.extractUsername(token);
+        User user = userService.getUserByUserId(userId);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", "Không tìm thấy người dùng"));
+        }
+
+        // Kiểm tra quyền admin
+        if (!"admin".equalsIgnoreCase(user.getType())) {
+            System.out.println(user.getType());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Collections.singletonMap("error", "Bạn không có quyền truy cập tài nguyên này"));
+        }
+
+        // Trả về toàn bộ danh sách người dùng
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
 }

@@ -2,6 +2,7 @@ package com.qhoang.connectify.service;
 
 import com.qhoang.connectify.entities.CartItem;
 import com.qhoang.connectify.entities.Cart;
+import com.qhoang.connectify.entities.Electronic;
 import com.qhoang.connectify.repository.CartItemRepository;
 import com.qhoang.connectify.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,4 +41,15 @@ public class CartItemService {
     public void deleteItemsByCart(Cart cart) {
         cartItemRepository.deleteByCart(cart);  // Xóa tất cả các CartItem của giỏ hàng
     }
+
+    public CartItem getByCartAndElectronic(Cart cart, Electronic electronic) {
+        return cartItemRepository.findByCartAndElectronic(cart, electronic);
+    }
+
+    public void deleteCartItemByCartIdAndElectronicId(String cartId, String electronicId) {
+        cartItemRepository.deleteByCartIdAndElectronicId(cartId, electronicId);
+    }
+
+
+
 }

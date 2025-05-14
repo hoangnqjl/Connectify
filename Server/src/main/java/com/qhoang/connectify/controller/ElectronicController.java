@@ -20,6 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/electronics") // đường dẫn đầu
+@CrossOrigin(origins = "http://localhost:8000")
 public class ElectronicController {
 
     @Autowired
@@ -108,7 +109,7 @@ public class ElectronicController {
         return ResponseEntity.ok(electronic);
     }
 
-
+    // sửa sản phẩm
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateElectronic(
             @RequestParam("id") String id,

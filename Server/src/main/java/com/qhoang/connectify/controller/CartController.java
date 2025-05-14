@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.util.Collections;
 
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 
 @RestController
 @RequestMapping("/carts")
+@CrossOrigin(origins = "http://localhost:8000")
 public class CartController {
 
     @Autowired
@@ -69,8 +71,6 @@ public class CartController {
             cartService.saveCart(cart);
         }
 
-
-
         // Tìm sản phẩm
         Electronic electronic = electronicService.getElectronicById(electronicId);
         if (electronic == null) {
@@ -78,16 +78,25 @@ public class CartController {
                     .body(Collections.singletonMap("error", "Không tìm thấy sản phẩm"));
         }
 
-        // Tạo mới CartItem
-        CartItem cartItem = new CartItem();
-        cartItem.setCart(cart);
-        cartItem.setElectronic(electronic);
-        cartItem.setQuantity(quantity);
+        // Kiểm tra nếu item đã tồn tại trong giỏ hàng
+        CartItem existingItem = cartItemService.getByCartAndElectronic(cart, electronic);
 
-        cartItemService.saveCartItem(cartItem);
+        if (existingItem != null) {
+            // Nếu đã có thì tăng số lượng
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            cartItemService.saveCartItem(existingItem);
+        } else {
+            // Nếu chưa có thì thêm mới
+            CartItem cartItem = new CartItem();
+            cartItem.setCart(cart);
+            cartItem.setElectronic(electronic);
+            cartItem.setQuantity(quantity);
+            cartItemService.saveCartItem(cartItem);
+        }
 
         return ResponseEntity.ok(Collections.singletonMap("message", "Đã thêm vào giỏ hàng"));
     }
+
 
 
     @GetMapping("/get")
@@ -117,5 +126,28 @@ public class CartController {
 
         return ResponseEntity.ok(response);
     }
+
+
+    @DeleteMapping("/delete-items")
+    @Transactional
+    public ResponseEntity<?> deleteMultipleCartItems(
+            @RequestParam("cartId") String cartId,
+            @RequestParam("electronicIds") List<String> electronicIds
+    ) {
+        try {
+            for (String electronicId : electronicIds) {
+                cartItemService.deleteCartItemByCartIdAndElectronicId(cartId, electronicId);
+            }
+            return ResponseEntity.ok(Collections.singletonMap("message", "Đã xóa các sản phẩm khỏi giỏ hàng"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Lỗi khi xóa sản phẩm: " + e.getMessage()));
+        }
+    }
+
+
+
+
+
 
 }

@@ -14,7 +14,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/invoices")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:8000")
 public class InvoiceController {
 
     @Autowired
@@ -62,14 +62,14 @@ public class InvoiceController {
         return ResponseEntity.ok(invoices);
     }
 
-    // POST new invoice
+    // POST new invoice route laf /invoices
     @PostMapping
     public ResponseEntity<?> addInvoice(
-            @RequestParam String address,
-            @RequestParam String paymentMethod,
-            @RequestParam String purchasedItems,
-            @RequestParam Long totalPrice,
-            @RequestParam String status,
+            @RequestParam String address, // địa chỉ Phường Xã, Tỉnh Thành phố ,
+            @RequestParam String paymentMethod, // Phương thức thanh toán
+            @RequestParam String purchasedItems, // ${tensanpham} SL {$sl}, ${tensanpham2} SL {SL_sp2}
+            @RequestParam Long totalPrice, // tông gia tinh tren frontend
+            @RequestParam String status, // mac dinh co gia tri là processing
             @RequestHeader("Authorization") String authHeader) {
 
         User user = extractUserFromToken(authHeader);
@@ -99,7 +99,7 @@ public class InvoiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // PUT update invoice status
+    //Quản lý đơn hàng (Duyệt đơn, hủy đơn chuyển đổi trạng thái là processed (đã xử lí), processing (đang xử lis), )
     @PostMapping("/{invoiceId}/status")
     public ResponseEntity<?> updateInvoiceStatus(@PathVariable String invoiceId, @RequestParam String status) {
         boolean updated = invoiceService.updateInvoiceStatus(invoiceId, status);

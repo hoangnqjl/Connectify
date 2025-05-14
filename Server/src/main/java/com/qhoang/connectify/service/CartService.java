@@ -33,6 +33,12 @@ public class CartService {
         return cart;
     }
 
+    public boolean cartExistsByUserId(String userId) {
+        // Kiểm tra xem có giỏ hàng nào liên kết với user_id này không
+        return cartRepository.existsByUser_UserId(userId);
+    }
+
+
     // Thêm hoặc cập nhật giỏ hàng
     public Cart saveCart(Cart cart) {
         return cartRepository.save(cart);  // Lưu hoặc cập nhật giỏ hàng

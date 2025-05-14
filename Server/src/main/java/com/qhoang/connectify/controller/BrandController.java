@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/brands")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:8000")
 public class BrandController {
 
     private final BrandRepository brandRepository;

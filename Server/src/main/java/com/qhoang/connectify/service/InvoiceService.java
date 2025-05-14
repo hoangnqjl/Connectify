@@ -37,4 +37,6 @@ public class InvoiceService {
         int updatedRows = invoiceRepository.updateInvoiceStatus(invoiceId, status);
         return updatedRows > 0;
     }
+
+
 }

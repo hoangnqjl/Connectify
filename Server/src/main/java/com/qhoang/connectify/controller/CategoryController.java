@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
+@CrossOrigin(origins = "http://localhost:8000")
 public class CategoryController {
 
     private final CategoryRepository categoryRepository;
