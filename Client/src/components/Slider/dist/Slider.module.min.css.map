@@ -1,0 +1,1 @@
+{"version":3,"sources":["Slider.module.scss"],"names":[],"mappings":"AAAA,SACE,QAAS,EAAE,KAAK,KAGlB,QACE,WAAY,EAAE,EAAE,IAAI,eACpB,cAAe","file":"Slider.module.min.css","sourcesContent":[".wrapper{\r\n    padding:0 20px 20px 20px;\r\n}\r\n.slider{\r\n    box-shadow: 0 0 8px rgba(0,0,0,0.4);\r\n    border-radius: 20px;\r\n}"]}

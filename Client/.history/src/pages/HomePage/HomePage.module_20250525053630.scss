@@ -1,0 +1,55 @@
+.wrapper{
+    width: 100%;
+    display:flex;
+    flex-direction: column;
+}
+.content{
+    width: 100%;
+    .mobile{
+        >h1{
+            font-size: 20px;
+            font-weight: 600;
+            color:var(--primary);
+            margin-bottom: 10px;
+            margin-top: 20px;
+
+        }
+
+    }
+     .laptop{
+        >h1{
+            font-size: 20px;
+            font-weight: 600;
+            color:var(--primary);
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+    }
+}
+.products {
+  display: grid;
+  grid-auto-flow: column;         // cuộn theo chiều ngang
+  grid-template-rows: repeat(2, minmax(420px, auto)); // 2 hàng với chiều cao tối thiểu
+  grid-auto-columns: min-content; // mỗi cột rộng vừa đủ item
+  gap: 24px;                       // khoảng cách giữa các item
+  padding: 10px 2px;
+  max-width: 100%;
+  height: auto;                    // cho phép container tự điều chỉnh chiều cao
+  min-height: 860px;              // chiều cao tối thiểu cho 2 hàng (420px * 2 + gap)
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.products::-webkit-scrollbar{
+    display:none;
+}
+
+// Responsive cho mobile
+@media screen and (max-width: 639px) {
+  .products {
+    grid-template-rows: repeat(2, minmax(350px, auto)); // chiều cao nhỏ hơn cho mobile
+    min-height: 720px;              // chiều cao tối thiểu cho mobile (350px * 2 + gap)
+    gap: 20px;                      // khoảng cách nhỏ hơn
+  }
+}

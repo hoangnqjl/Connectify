@@ -1,0 +1,41 @@
+@import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+:root{
+    --primary:#263646;
+    --bgc:#F6F6F8;
+    --gray50: #3F3F4680;
+    --gray85:#3F3F46D9;
+}
+*{
+    box-sizing: border-box;
+}
+html{
+    font-size: 62.5%;
+    //62.5 của 16px = 10px -> 1rem=10px
+}
+body{
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+}
+@mixin input(){
+    border:none;
+    outline:none;
+    background-color: transparent;
+}
+@mixin flex-center(){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@mixin button(){
+    border:none;
+    outline:none;
+    cursor:pointer;
+
+}
+@mixin a(){
+    text-decoration: none;
+    color:var(--black);
+}

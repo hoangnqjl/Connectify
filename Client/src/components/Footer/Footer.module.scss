@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+.wrapper{
+    width: 100%;
+    padding:20px 30px;
+    background-color: var(--primary);
+}
+.content{
+    width: 100%;
+    height:100%;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.list{
+    list-style-type: none;
+    .title-small{
+        color:white;
+        font-size: 16px;
+        font-weight:500;
+    }
+}
+
+.title{
+    color:white;
+    font-weight: 900;
+    font-size: 26px !important;
+}
+.item{
+    color:white;
+  font-family: 'Roboto', sans-serif;
+    font-weight:100;
+    cursor:pointer;
+}
+.item:hover{
+    border-bottom: 1px solid white;
+}
+.input{
+    width: 100%;
+    border-radius: 20px;
+    background-color: white;
+    padding:6px 12px;
+    margin:10px 0;
+    display:flex;
+    align-items: center;
+   
+    input{
+        font-size: 14px;
+        flex:1;
+        outline: none;
+        padding-left: 6px;
+    }
+    span{
+    font-size: 14px;
+    font-weight: 600;
+    cursor:pointer;
+    }
+}
+.social{
+    width: 36px;
+    height: 26px;
+    border-radius: 4px;
+    background-color: white;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    cursor:pointer;
+}
+.icon-fb{
+    color:blue;
+    font-size: 20px;
+}
+.icon-tiktok{
+    font-size: 20px;
+}

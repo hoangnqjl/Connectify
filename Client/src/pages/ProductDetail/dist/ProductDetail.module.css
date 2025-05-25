@@ -1,0 +1,148 @@
+@charset "UTF-8";
+.wrapper {
+  width: 100%;
+  border-radius: 30px;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  padding: 22px;
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.info {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.info-left {
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-left > h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.info-left > img {
+  width: 100%;
+}
+
+.info-right {
+  width: 54%;
+}
+
+.cart {
+  width: 35px;
+  height: 35px;
+  border-radius: 2px;
+  background-color: #E8E8E8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.cart:hover {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.buy-btn {
+  padding: 5px 24px;
+  border-radius: 8px;
+  background-color: #E8E8E8;
+  cursor: pointer;
+}
+
+.buy-btn.disabled {
+  background-color: transparent;
+  /* Màu xám cho nút "Hết hàng" */
+  cursor: not-allowed;
+  pointer-events: none;
+  color: red;
+}
+
+.buy-btn:hover {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.infor-product {
+  width: 100%;
+  border: 1px solid black;
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.infor-product-item {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.infor-product-item > span {
+  font-size: 14px;
+  font-weight: 300;
+  color: #263646;
+}
+
+.infor-product-item > p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #263646;
+}
+
+.descript {
+  width: 100%;
+}
+
+.description {
+  font-size: 14px;
+  color: #263646D9;
+}
+
+.product > h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.products {
+  display: flex;
+  padding: 10px 2px;
+  max-width: 100%;
+  overflow-x: auto;
+  position: relative;
+  scroll-behavior: smooth;
+  gap: 20px;
+}
+
+.products::-webkit-scrollbar {
+  display: none;
+}
+
+@media screen and (max-width: 639px) {
+  .info {
+    display: block;
+    margin-bottom: 20px;
+  }
+  .info-left {
+    width: 100%;
+  }
+  .info-right {
+    width: 100%;
+  }
+}
+
+/*# sourceMappingURL=ProductDetail.module.css.map */

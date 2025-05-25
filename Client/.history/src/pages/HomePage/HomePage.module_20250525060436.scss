@@ -1,0 +1,60 @@
+.wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px 0;
+}
+
+.content{
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    .mobile, .laptop{
+        margin-bottom: 50px;
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+
+        > h1{
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 25px;
+            margin-top: 0;
+            position: relative;
+            padding-bottom: 15px;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 60px;
+                height: 4px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                border-radius: 2px;
+            }
+        }
+    }
+}
+.products {
+  display: grid;
+  grid-auto-flow: column;         // cuộn theo chiều ngang
+  grid-template-rows: repeat(2, 1fr); // 2 hàng
+  grid-auto-columns: min-content; // mỗi cột rộng vừa đủ item
+  gap: 24px;                       // khoảng cách giữa các item
+  padding: 10px 2px;
+  max-width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.products::-webkit-scrollbar{
+    display:none;
+}

@@ -1,0 +1,1 @@
+{"version":3,"names":[],"mappings":"","sources":["Slider.module.scss"],"sourcesContent":[".wrapper{\r\n    padding:0 20px 20px 20px;\r\n}\r\n.slider{\r\n    box-shadow: 0 0 8px rgba(0,0,0,0.4);\r\n    border-radius: 20px;\r\n}"],"file":"Slider.module.css"}

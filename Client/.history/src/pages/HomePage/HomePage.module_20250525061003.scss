@@ -1,0 +1,125 @@
+.wrapper{
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg-secondary);
+    padding: var(--spacing-xl) 0;
+}
+
+.content{
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-xl);
+
+    .mobile, .laptop{
+        @include card();
+        margin-bottom: var(--spacing-2xl);
+        padding: var(--spacing-2xl);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--bg-gradient);
+        }
+
+        > h1{
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            margin-top: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+
+            &::after {
+                content: '';
+                flex: 1;
+                height: 2px;
+                background: var(--bg-gradient);
+                border-radius: 1px;
+            }
+        }
+    }
+}
+
+.products {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-columns: min-content;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-md) var(--spacing-xs);
+    max-width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar{
+        display: none;
+    }
+
+    // Firefox
+    scrollbar-width: none;
+}
+
+// Responsive design
+@media (max-width: 1200px) {
+    .content {
+        padding: 0 var(--spacing-lg);
+    }
+
+    .products {
+        gap: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        padding: var(--spacing-lg) 0;
+    }
+
+    .content {
+        padding: 0 var(--spacing-md);
+
+        .mobile, .laptop {
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+
+            > h1 {
+                font-size: 2.4rem;
+                margin-bottom: var(--spacing-lg);
+            }
+        }
+    }
+
+    .products {
+        grid-template-rows: repeat(1, 1fr);
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm) 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        .mobile, .laptop {
+            > h1 {
+                font-size: 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+
+                &::after {
+                    width: 60px;
+                    flex: none;
+                }
+            }
+        }
+    }
+}

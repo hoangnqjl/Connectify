@@ -1,0 +1,2 @@
+.wrapper{position:absolute;top:50%;right:10px;left:10px;z-index:1;display:flex;justify-content:space-between;transform:translateY(-50%)}.btn-arrow{width:40px;height:40px;background-color:#fff;backdrop-filter:blur(20px);display:flex;justify-content:center;align-items:center;box-shadow:0 0 4px rgba(0,0,0,.5);border-radius:50%;cursor:pointer}.icon-arrow{font-size:30px}
+/*# sourceMappingURL=Scroll.module.min.css.map */

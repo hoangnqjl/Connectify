@@ -1,0 +1,126 @@
+@import  "../../Globals/GlobalStyles/GlobalStyles.scss";
+
+.wrapper{
+    padding:20px;
+    background-color: var(--bgc);
+}
+.logo{
+    color:var(--primary);
+    line-height: 10px;
+    font-weight: bold;
+      font-family: 'Inter', sans-serif;
+}
+.nav{
+  padding-left:20px;
+  margin-left: 20px;
+  border-left: 2px solid var(--primary);
+  &-item{
+    margin-right: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor:pointer;
+    color:var(--primary);
+  }
+}
+.nav-link {
+  position: relative;
+  padding-bottom: 4px;
+  transition: all 0.5s;
+
+  &.active::before {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 2px;
+    border-radius: 20px;
+    background-color: var(--primary); 
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.search{
+    min-width: 300px;
+    max-width: 350px;
+    border-radius: 30px;
+    padding:8px 14px;
+    background-color: #E8E8E8;
+    &-icon{
+        font-size: 20px;
+        color:var(--gray50);
+    }
+    &-input{
+        @include input();
+        font-size: 14px;
+        color:var(--primary);
+        margin-left: 10px;
+    }
+}
+.cart{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #E8E8E8;
+    padding:5px;
+    @include flex-center();
+    margin:0 20px;
+    cursor:pointer;
+}
+.cart:hover{
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+
+.btn-login{
+    display:flex;
+    align-items: center;
+    padding:8px 16px;
+    background-color: #E8E8E8;
+    border-radius: 20px;
+
+}
+.btn-menu{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+      background-color: #E8E8E8;
+  @include flex-center;
+}
+.btn-login:hover{
+        box-shadow: 0 0 2px rgba(0,0,0,0.5);
+
+}
+.btn-login-title {
+    color:var(--primary);
+    font-weight: 500;
+}
+
+@media screen and (max-width: 639px) {
+  .wrapper{
+    padding:10px;
+  }
+  .logo{
+    font-size: 20px;
+  }
+  .search{
+    min-width: 170px;
+  }
+  .cart{
+    margin:0 5px;
+  }
+  .btn-login{
+    display:none;
+  }
+  .search-input{
+    font-size: 10px;
+  }
+  .avt-auth{
+    display:none;
+  }
+}
+
+@media screen and (min-width: 640px) and (max-width: 1023px) {
+  .btn-menu{
+    margin-left: 20px;
+  }
+}
