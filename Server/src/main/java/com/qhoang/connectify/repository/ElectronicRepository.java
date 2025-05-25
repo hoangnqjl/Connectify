@@ -22,4 +22,6 @@ public interface ElectronicRepository extends JpaRepository<Electronic, String> 
             String manufactureYear,
             String description
     );
+
+    Electronic findByName(String name);
 }

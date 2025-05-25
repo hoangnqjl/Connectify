@@ -16,6 +16,8 @@
         <spring.version>5.3.23</spring.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -197,6 +199,7 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
 
@@ -217,7 +220,7 @@
                     <container>
                         <containerId>tomcat9x</containerId>
                         <zipUrlInstaller>
-                            <url>https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.104/bin/apache-tomcat-9.0.104.zip</url>
+                            <url>https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.105/bin/apache-tomcat-9.0.105.zip</url>
                         </zipUrlInstaller>
                     </container>
                     <configuration>

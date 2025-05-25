@@ -15,10 +15,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@Configuration
-@EnableTransactionManagement
-@ComponentScan(basePackages = "com.qhoang.connectify")
-@EnableJpaRepositories(basePackages = "com.qhoang.connectify.repository")
+ @Configuration
+ @EnableTransactionManagement
+ @ComponentScan(basePackages = "com.qhoang.connectify")
+ @EnableJpaRepositories(basePackages = "com.qhoang.connectify.repository")
 
 public class AppConfig {
 
@@ -37,8 +37,8 @@ public class AppConfig {
         Properties jpaProperties = new Properties();
         jpaProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         jpaProperties.setProperty("hibernate.hbm2ddl.auto", "update"); // Tùy chọn: update schema
-        jpaProperties.setProperty("hibernate.show_sql", "true"); // Hiển thị SQL log (tùy chọn)
-        jpaProperties.setProperty("hibernate.format_sql", "true"); // Định dạng SQL log (tùy chọn)
+        jpaProperties.setProperty("hibernate.show_sql", "false"); // Hiển thị SQL log (tùy chọn)
+        jpaProperties.setProperty("hibernate.format_sql", "false"); // Định dạng SQL log (tùy chọn)
         emfBean.setJpaProperties(jpaProperties);
 
         return emfBean;

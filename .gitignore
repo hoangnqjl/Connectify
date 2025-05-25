@@ -1,0 +1,256 @@
+# 🚫 Connectify .gitignore
+
+# ===========================
+# Java & Maven
+# ===========================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ===========================
+# IDE Files
+# ===========================
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.project
+.classpath
+.factorypath
+.buildpath
+.target
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# ===========================
+# Operating System
+# ===========================
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================
+# Application Specific
+# ===========================
+
+# Image uploads directory
+Data/
+uploads/
+images/
+
+# Logs
+logs/
+*.log
+*.log.*
+*.out
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration files with sensitive data
+application-local.properties
+application-prod.properties
+database.properties
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# ===========================
+# Build & Deployment
+# ===========================
+
+# Tomcat
+tomcat/
+webapps/
+work/
+catalina.out
+
+# Spring Boot
+spring.log
+
+# Package files
+*.zip
+*.tar.gz
+*.rar
+
+# ===========================
+# Security & Credentials
+# ===========================
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# Keys and certificates
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+*.truststore
+
+# Secrets
+secrets/
+credentials/
+*.secret
+
+# ===========================
+# Development Tools
+# ===========================
+
+# Node.js (if using frontend tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# ===========================
+# Documentation Build
+# ===========================
+
+# Generated documentation
+docs/build/
+site/
+
+# ===========================
+# Testing
+# ===========================
+
+# Test results
+test-results/
+coverage/
+*.coverage
+.nyc_output
+
+# ===========================
+# Custom Project Ignores
+# ===========================
+
+# User-specific configuration
+config/local/
+local.properties
+
+# Generated files
+generated/
+auto-generated/
+
+# Cache directories
+.cache/
+cache/
+
+# ===========================
+# IMPORTANT NOTES
+# ===========================
+
+# The following files SHOULD be committed:
+# - README.md
+# - DEPLOYMENT_GUIDE.md
+# - TROUBLESHOOTING.md
+# - CHANGELOG.md
+# - setup.sh
+# - setup.bat
+# - pom.xml
+# - application.properties (template)
+# - Source code files
+
+# The following SHOULD NOT be committed:
+# - Actual image files in Data/ directory
+# - Local configuration with passwords
+# - IDE-specific files
+# - Build artifacts
+# - Log files

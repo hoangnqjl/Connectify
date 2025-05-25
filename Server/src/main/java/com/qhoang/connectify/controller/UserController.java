@@ -2,30 +2,35 @@ package com.qhoang.connectify.controller;
 
 import com.qhoang.connectify.entities.User;
 import com.qhoang.connectify.service.UserService;
+import com.qhoang.connectify.service.AuthorizationService;
 import com.qhoang.connectify.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-@CrossOrigin(
-        origins = "http://localhost:8000" // frontend của bạn
-//        allowedHeaders = "*",
-//        exposedHeaders = "Authorization",
-//        allowCredentials = "true"
-)
+@CrossOrigin(origins = {"http://localhost:8000", "http://127.0.0.1:8000"},
+        allowCredentials = "true",
+        allowedHeaders = {"Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 @RestController
 @RequestMapping("/auth")
 public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtUtil jwtUtil,
+                          AuthorizationService authorizationService) {
         this.userService = userService;
-        this.jwtUtil = new JwtUtil();
+        this.jwtUtil = jwtUtil;
+        this.authorizationService = authorizationService;
     }
 
     // Đăng nhập
@@ -34,7 +39,7 @@ public class UserController {
                                    @RequestParam("password") String password) {
         // Kiểm tra thông tin người dùng hợp lệ
         User user = userService.getUserByEmail(email);  // Sử dụng UserService để tìm người dùng
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && password.equals(user.getPassword())) {
             // Lấy user_id từ đối tượng User
             String userId = user.getUserId();
 
@@ -44,8 +49,13 @@ public class UserController {
             // Trả về token
             return ResponseEntity.ok(Collections.singletonMap("token", token));
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("error", "Sai thông tin đăng nhập"));
+            Map<String, Object> debugInfo = new HashMap<>();
+            debugInfo.put("error", "Sai thông tin đăng nhập");
+            debugInfo.put("storedPassword", (user != null) ? user.getPassword() : "null");
+            debugInfo.put("enteredPassword", password);
+            debugInfo.put("matchResult", (user != null) && password.equals(user.getPassword()));
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(debugInfo);
         }
     }
 
@@ -75,8 +85,12 @@ public class UserController {
         user.setFullname(fullname);
         user.setEmail(email);
         user.setPhonenumber(phonenumber);
+        // Lưu mật khẩu nguyên văn thay vì mã hóa
         user.setPassword(password);
         user.setAvatar(null);
+        user.setType("user"); // Mặc định là user
+        user.setCreatedAt(new Date());
+        user.setUpdatedAt(new Date());
 
         // Lưu người dùng vào cơ sở dữ liệu
         userService.saveUser(user);
@@ -107,19 +121,31 @@ public class UserController {
         }
     }
 
-
     // Lấy tất cả người dùng (chỉ admin mới xem được)
     @GetMapping("/all-users")
     public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String authHeader) {
+        // Kiểm tra quyền admin
+        if (!authorizationService.hasAdminAccess(authHeader)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Collections.singletonMap("error", "Bạn không có quyền truy cập tài nguyên này"));
+        }
+
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+
+    @PostMapping("/update-users")
+    public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String authHeader,
+                                        @RequestParam(value = "fullname", required = false) String fullname,
+                                        @RequestParam(value = "phonenumber", required = false) String phonenumber,
+                                        @RequestParam(value = "password", required = false) String password) {
         String token = authHeader.replace("Bearer ", "");
 
-        // Xác thực token
         if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Collections.singletonMap("error", "Token không hợp lệ"));
         }
 
-        // Trích xuất userId từ token
         String userId = jwtUtil.extractUsername(token);
         User user = userService.getUserByUserId(userId);
 
@@ -128,15 +154,21 @@ public class UserController {
                     .body(Collections.singletonMap("error", "Không tìm thấy người dùng"));
         }
 
-        // Kiểm tra quyền admin
-        if (!"admin".equalsIgnoreCase(user.getType())) {
-            System.out.println(user.getType());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Collections.singletonMap("error", "Bạn không có quyền truy cập tài nguyên này"));
+        // Cập nhật các trường nếu có
+        if (fullname != null && !fullname.trim().isEmpty()) {
+            user.setFullname(fullname);
+        }
+        if (phonenumber != null && !phonenumber.trim().isEmpty()) {
+            user.setPhonenumber(phonenumber);
+        }
+        if (password != null && !password.trim().isEmpty()) {
+            user.setPassword(password); // ⚠️ Cần mã hóa nếu dùng trong môi trường thật
         }
 
-        // Trả về toàn bộ danh sách người dùng
-        return ResponseEntity.ok(userService.getAllUsers());
+        user.setUpdatedAt(new Date());
+        userService.saveUser(user);
+
+        return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin thành công"));
     }
 
 }

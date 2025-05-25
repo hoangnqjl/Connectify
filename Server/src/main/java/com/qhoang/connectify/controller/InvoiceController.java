@@ -2,9 +2,11 @@ package com.qhoang.connectify.controller;
 
 import com.qhoang.connectify.entities.Invoice;
 import com.qhoang.connectify.entities.User;
+import com.qhoang.connectify.service.ElectronicService;
 import com.qhoang.connectify.service.InvoiceService;
 import com.qhoang.connectify.repository.UserRepository;
 import com.qhoang.connectify.service.UserService;
+import com.qhoang.connectify.service.AuthorizationService;
 import com.qhoang.connectify.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -24,6 +26,11 @@ public class InvoiceController {
     private InvoiceService invoiceService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthorizationService authorizationService;
+
+    @Autowired
+    private ElectronicService electronicService;
 
     private User extractUserFromToken(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -34,9 +41,15 @@ public class InvoiceController {
         return null;
     }
 
-    // GET all invoices
+    // GET all invoices (chỉ admin)
     @GetMapping
-    public ResponseEntity<List<Invoice>> getAllInvoices() {
+    public ResponseEntity<?> getAllInvoices(@RequestHeader("Authorization") String authHeader) {
+        // Kiểm tra quyền admin
+        if (!authorizationService.hasAdminAccess(authHeader)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Collections.singletonMap("error", "Bạn không có quyền xem tất cả hóa đơn"));
+        }
+
         List<Invoice> invoices = invoiceService.getAllInvoices();
         if (invoices.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -65,7 +78,7 @@ public class InvoiceController {
     // POST new invoice route laf /invoices
     @PostMapping
     public ResponseEntity<?> addInvoice(
-            @RequestParam String address, // địa chỉ Phường Xã, Tỉnh Thành phố ,
+            @RequestParam String address,
             @RequestParam String paymentMethod, // Phương thức thanh toán
             @RequestParam String purchasedItems, // ${tensanpham} SL {$sl}, ${tensanpham2} SL {SL_sp2}
             @RequestParam Long totalPrice, // tông gia tinh tren frontend
@@ -99,14 +112,26 @@ public class InvoiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //Quản lý đơn hàng (Duyệt đơn, hủy đơn chuyển đổi trạng thái là processed (đã xử lí), processing (đang xử lis), )
+
     @PostMapping("/{invoiceId}/status")
-    public ResponseEntity<?> updateInvoiceStatus(@PathVariable String invoiceId, @RequestParam String status) {
+    public ResponseEntity<?> updateInvoiceStatus(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable String invoiceId,
+            @RequestParam String status) {
+
+        // Kiểm tra quyền admin
+        if (!authorizationService.hasAdminAccess(authHeader)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Bạn không có quyền cập nhật trạng thái đơn hàng");
+        }
+
         boolean updated = invoiceService.updateInvoiceStatus(invoiceId, status);
         if (updated) {
-            return ResponseEntity.ok("Invoice status updated successfully");
+            return ResponseEntity.ok("Cập nhật trạng thái đơn hàng thành công");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn cần cập nhật");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Không thể cập nhật (có thể không đủ hàng hoặc không tìm thấy đơn)");
         }
     }
+
 }

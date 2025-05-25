@@ -5,7 +5,7 @@ import com.qhoang.connectify.repository.ElectronicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ElectronicService {
@@ -40,4 +40,42 @@ public class ElectronicService {
                         keyword, keyword, keyword, keyword, keyword
                 );
     }
+
+//    // ✅ Hàm xử lý trừ số lượng khi hóa đơn được duyệt
+//    public boolean deductQuantityFromPurchasedItems(String purchasedItems) {
+//        String[] items = purchasedItems.split(",");
+//        Map<Electronic, Integer> deductions = new HashMap<>();
+//
+//        for (String item : items) {
+//            item = item.trim();
+//            if (!item.contains("SL")) continue;
+//
+//            String[] parts = item.split("SL");
+//            if (parts.length != 2) return false;
+//
+//            String itemName = parts[0].trim();
+//            int quantity;
+//
+//            try {
+//                quantity = Integer.parseInt(parts[1].trim());
+//            } catch (NumberFormatException e) {
+//                return false;
+//            }
+//
+//            Electronic electronic = electronicRepository.findByName(itemName);
+//            if (electronic == null || electronic.getQuantity() < quantity) {
+//                return false;
+//            }
+//            deductions.put(electronic, quantity);
+//        }
+//
+//        // Nếu đủ số lượng => trừ thật
+//        for (Map.Entry<Electronic, Integer> entry : deductions.entrySet()) {
+//            Electronic e = entry.getKey();
+//            e.setQuantity(e.getQuantity() - entry.getValue());
+//            electronicRepository.save(e);
+//        }
+//
+//        return true;
+//    }
 }
