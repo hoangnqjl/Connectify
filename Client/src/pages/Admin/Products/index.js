@@ -11,8 +11,11 @@ import {
   MdSearch,
   MdFilterList,
   MdTrendingUp,
-  MdTrendingDown
+  MdTrendingDown,
+  MdAdd,
+  MdDelete
 } from "react-icons/md";
+import { CreateProductModal, EditProductModal } from './ProductModal';
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +34,10 @@ function AdminProducts() {
   const [brands, setBrands] = useState([]);
   const [showStockModal, setShowStockModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // 📦 States cho modal thêm/sửa sản phẩm
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -131,11 +138,11 @@ function AdminProducts() {
 
         // Update local state immediately for better UX
         setProducts(prevProducts =>
-          prevProducts.map(product =>
-            product.id === productId
-              ? { ...product, quantity: parseInt(newQuantity) }
-              : product
-          )
+            prevProducts.map(product =>
+                product.id === productId
+                    ? { ...product, quantity: parseInt(newQuantity) }
+                    : product
+            )
         );
 
         console.log('✅ Local state updated immediately for better UX');
@@ -155,6 +162,59 @@ function AdminProducts() {
     }
   };
 
+  // 📦 Handler thêm sản phẩm mới
+  const handleCreateProduct = async (productData) => {
+    try {
+      const result = await electronicService.createElectronic(productData);
+      if (result.success) {
+        alert(result.message || 'Thêm sản phẩm thành công!');
+        fetchProducts();
+        fetchStats();
+        setShowCreateModal(false);
+      } else {
+        alert('Lỗi: ' + result.message);
+      }
+    } catch (error) {
+      alert('Có lỗi xảy ra khi thêm sản phẩm');
+    }
+  };
+
+  // ✏️ Handler sửa sản phẩm
+  const handleEditProduct = async (productData) => {
+    try {
+      const result = await electronicService.updateElectronic(productData);
+      if (result.success) {
+        alert(result.message || 'Cập nhật sản phẩm thành công!');
+        fetchProducts();
+        fetchStats();
+        setShowEditModal(false);
+        setSelectedProduct(null);
+      } else {
+        alert('Lỗi: ' + result.message);
+      }
+    } catch (error) {
+      alert('Có lỗi xảy ra khi cập nhật sản phẩm');
+    }
+  };
+
+  // 🗑️ Handler xóa sản phẩm
+  const handleDeleteProduct = async (productId, productName) => {
+    if (!window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${productName}"?`)) return;
+
+    try {
+      const result = await electronicService.deleteElectronic(productId);
+      if (result.success) {
+        alert(result.message || 'Xóa sản phẩm thành công!');
+        fetchProducts();
+        fetchStats();
+      } else {
+        alert('Lỗi: ' + result.message);
+      }
+    } catch (error) {
+      alert('Có lỗi xảy ra khi xóa sản phẩm');
+    }
+  };
+
   const getStatusColor = (quantity) => {
     if (quantity === 0) return 'out-of-stock';
     if (quantity < 10) return 'low-stock';
@@ -169,146 +229,156 @@ function AdminProducts() {
 
   if (loading && products.length === 0) {
     return (
-      <div className={cx("wrapper")}>
-        <div className={cx("loading")}>Đang tải dữ liệu...</div>
-      </div>
+        <div className={cx("wrapper")}>
+          <div className={cx("loading")}>Đang tải dữ liệu...</div>
+        </div>
     );
   }
 
   return (
-    <div className={cx("wrapper")}>
-      <div className={cx("header")}>
-        <div className={cx("title-section")}>
-          <h1>Quản lý Sản phẩm</h1>
-          <p>Quản lý kho hàng và inventory</p>
+      <div className={cx("wrapper")}>
+        <div className={cx("header")}>
+          <div className={cx("title-section")}>
+            <h1>Quản lý Sản phẩm</h1>
+            <p>Quản lý kho hàng và inventory</p>
+          </div>
+          <div className={cx("header-actions")}>
+            <button
+                onClick={() => setShowCreateModal(true)}
+                className={cx("add-btn")}
+                title="Thêm sản phẩm mới"
+            >
+              <MdAdd />
+              Thêm sản phẩm mới
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Statistics */}
-      <div className={cx("stats-row")}>
-        <div className={cx("stat-card")}>
-          <MdInventory className={cx("stat-icon")} />
-          <div className={cx("stat-content")}>
-            <h3>Tổng sản phẩm</h3>
-            <span>{stats.totalProducts || 0}</span>
+        {/* Statistics */}
+        <div className={cx("stats-row")}>
+          <div className={cx("stat-card")}>
+            <MdInventory className={cx("stat-icon")} />
+            <div className={cx("stat-content")}>
+              <h3>Tổng sản phẩm</h3>
+              <span>{stats.totalProducts || 0}</span>
+            </div>
+          </div>
+          <div className={cx("stat-card", "active")}>
+            <MdTrendingUp className={cx("stat-icon")} />
+            <div className={cx("stat-content")}>
+              <h3>Đang bán</h3>
+              <span>{stats.activeProducts || 0}</span>
+            </div>
+          </div>
+          <div className={cx("stat-card", "inactive")}>
+            <MdTrendingDown className={cx("stat-icon")} />
+            <div className={cx("stat-content")}>
+              <h3>Ngừng bán</h3>
+              <span>{stats.inactiveProducts || 0}</span>
+            </div>
+          </div>
+          <div className={cx("stat-card", "warning")}>
+            <MdWarning className={cx("stat-icon")} />
+            <div className={cx("stat-content")}>
+              <h3>Sắp hết hàng</h3>
+              <span>{stats.lowStockProducts || 0}</span>
+            </div>
           </div>
         </div>
-        <div className={cx("stat-card", "active")}>
-          <MdTrendingUp className={cx("stat-icon")} />
-          <div className={cx("stat-content")}>
-            <h3>Đang bán</h3>
-            <span>{stats.activeProducts || 0}</span>
-          </div>
-        </div>
-        <div className={cx("stat-card", "inactive")}>
-          <MdTrendingDown className={cx("stat-icon")} />
-          <div className={cx("stat-content")}>
-            <h3>Ngừng bán</h3>
-            <span>{stats.inactiveProducts || 0}</span>
-          </div>
-        </div>
-        <div className={cx("stat-card", "warning")}>
-          <MdWarning className={cx("stat-icon")} />
-          <div className={cx("stat-content")}>
-            <h3>Sắp hết hàng</h3>
-            <span>{stats.lowStockProducts || 0}</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Low Stock Alert */}
-      {lowStockProducts.length > 0 && (
-        <div className={cx("alert-section")}>
-          <div className={cx("alert-header")}>
-            <MdWarning className={cx("alert-icon")} />
-            <h3>Sản phẩm sắp hết hàng (≤ 10)</h3>
-          </div>
-          <div className={cx("alert-products")}>
-            {lowStockProducts.slice(0, 5).map((product) => (
-              <div key={product.id} className={cx("alert-product")}>
-                <img
-                  src={formatImageUrl(product.image)}
-                  alt={product.name}
-                  className={cx("alert-product-image")}
-                />
-                <div className={cx("alert-product-info")}>
-                  <strong>{product.name}</strong>
-                  <span>Còn {product.quantity} sản phẩm</span>
-                </div>
-                <button
-                  className={cx("update-stock-btn")}
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    setShowStockModal(true);
-                  }}
-                >
-                  Nhập hàng
-                </button>
+        {/* Low Stock Alert */}
+        {lowStockProducts.length > 0 && (
+            <div className={cx("alert-section")}>
+              <div className={cx("alert-header")}>
+                <MdWarning className={cx("alert-icon")} />
+                <h3>Sản phẩm sắp hết hàng (≤ 10)</h3>
               </div>
+              <div className={cx("alert-products")}>
+                {lowStockProducts.slice(0, 5).map((product) => (
+                    <div key={product.id} className={cx("alert-product")}>
+                      <img
+                          src={formatImageUrl(product.image)}
+                          alt={product.name}
+                          className={cx("alert-product-image")}
+                      />
+                      <div className={cx("alert-product-info")}>
+                        <strong>{product.name}</strong>
+                        <span>Còn {product.quantity} sản phẩm</span>
+                      </div>
+                      <button
+                          className={cx("update-stock-btn")}
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setShowStockModal(true);
+                          }}
+                      >
+                        Nhập hàng
+                      </button>
+                    </div>
+                ))}
+              </div>
+            </div>
+        )}
+
+        {/* Search & Filter */}
+        <div className={cx("search-section")}>
+          <div className={cx("search-input-wrapper")}>
+            <MdSearch className={cx("search-icon")} />
+            <input
+                type="text"
+                placeholder="Tìm kiếm sản phẩm..."
+                value={searchFilters.keyword}
+                onChange={(e) => setSearchFilters({...searchFilters, keyword: e.target.value})}
+                className={cx("search-input")}
+            />
+          </div>
+
+          <select
+              value={searchFilters.categoryId}
+              onChange={(e) => setSearchFilters({...searchFilters, categoryId: e.target.value})}
+              className={cx("filter-select")}
+          >
+            <option value="">Tất cả danh mục</option>
+            {categories.map((category) => (
+                <option key={category.cat_id} value={category.cat_id}>
+                  {category.cat_name}
+                </option>
             ))}
+          </select>
+
+          <select
+              value={searchFilters.brandId}
+              onChange={(e) => setSearchFilters({...searchFilters, brandId: e.target.value})}
+              className={cx("filter-select")}
+          >
+            <option value="">Tất cả thương hiệu</option>
+            {brands.map((brand) => (
+                <option key={brand.brand_id} value={brand.brand_id}>
+                  {brand.brand_name}
+                </option>
+            ))}
+          </select>
+
+          <select
+              value={searchFilters.status}
+              onChange={(e) => setSearchFilters({...searchFilters, status: e.target.value})}
+              className={cx("filter-select")}
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="active">Đang bán</option>
+            <option value="inactive">Ngừng bán</option>
+          </select>
+
+          <div className={cx("filter-info")}>
+            <MdFilterList />
+            <span>Tự động lọc khi nhập</span>
           </div>
         </div>
-      )}
 
-      {/* Search & Filter */}
-      <div className={cx("search-section")}>
-        <div className={cx("search-input-wrapper")}>
-          <MdSearch className={cx("search-icon")} />
-          <input
-            type="text"
-            placeholder="Tìm kiếm sản phẩm..."
-            value={searchFilters.keyword}
-            onChange={(e) => setSearchFilters({...searchFilters, keyword: e.target.value})}
-            className={cx("search-input")}
-          />
-        </div>
-
-        <select
-          value={searchFilters.categoryId}
-          onChange={(e) => setSearchFilters({...searchFilters, categoryId: e.target.value})}
-          className={cx("filter-select")}
-        >
-          <option value="">Tất cả danh mục</option>
-          {categories.map((category) => (
-            <option key={category.cat_id} value={category.cat_id}>
-              {category.cat_name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={searchFilters.brandId}
-          onChange={(e) => setSearchFilters({...searchFilters, brandId: e.target.value})}
-          className={cx("filter-select")}
-        >
-          <option value="">Tất cả thương hiệu</option>
-          {brands.map((brand) => (
-            <option key={brand.brand_id} value={brand.brand_id}>
-              {brand.brand_name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={searchFilters.status}
-          onChange={(e) => setSearchFilters({...searchFilters, status: e.target.value})}
-          className={cx("filter-select")}
-        >
-          <option value="">Tất cả trạng thái</option>
-          <option value="active">Đang bán</option>
-          <option value="inactive">Ngừng bán</option>
-        </select>
-
-        <div className={cx("filter-info")}>
-          <MdFilterList />
-          <span>Tự động lọc khi nhập</span>
-        </div>
-      </div>
-
-      {/* Products Table */}
-      <div className={cx("table-container")}>
-        <table className={cx("products-table")}>
-          <thead>
+        {/* Products Table */}
+        <div className={cx("table-container")}>
+          <table className={cx("products-table")}>
+            <thead>
             <tr>
               <th>Hình ảnh</th>
               <th>Thông tin sản phẩm</th>
@@ -319,77 +389,118 @@ function AdminProducts() {
               <th>Trạng thái</th>
               <th>Thao tác</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {products.map((product) => (
-              <tr key={product.id}>
-                <td>
-                  <img
-                    src={formatImageUrl(product.image)}
-                    alt={product.name}
-                    className={cx("product-image")}
-                    onError={(e) => {
-                      e.target.src = "/images/item.jpg";
-                    }}
-                  />
-                </td>
-                <td>
-                  <div className={cx("product-info")}>
-                    <strong>{product.name}</strong>
-                    <span>{product.id}</span>
-                  </div>
-                </td>
-                <td>{product.category?.cat_name || 'N/A'}</td>
-                <td>{product.brand?.brand_name || 'N/A'}</td>
-                <td className={cx("price")}>{formatPrice(product.price)}</td>
-                <td>
+                <tr key={product.id}>
+                  <td>
+                    <img
+                        src={formatImageUrl(product.image)}
+                        alt={product.name}
+                        className={cx("product-image")}
+                        onError={(e) => {
+                          e.target.src = "/images/item.jpg";
+                        }}
+                    />
+                  </td>
+                  <td>
+                    <div className={cx("product-info")}>
+                      <strong>{product.name}</strong>
+                      <span>{product.id}</span>
+                    </div>
+                  </td>
+                  <td>{product.category?.cat_name || 'N/A'}</td>
+                  <td>{product.brand?.brand_name || 'N/A'}</td>
+                  <td className={cx("price")}>{formatPrice(product.price)}</td>
+                  <td>
                   <span className={cx("quantity", getStatusColor(product.quantity))}>
                     {product.quantity}
                   </span>
-                </td>
-                <td>
+                  </td>
+                  <td>
                   <span className={cx("status", getStatusColor(product.quantity))}>
                     {getStatusText(product.quantity)}
                   </span>
-                </td>
-                <td>
-                  <div className={cx("action-buttons")}>
-                    <button
-                      onClick={() => {
-                        setSelectedProduct(product);
-                        setShowStockModal(true);
-                      }}
-                      className={cx("stock-btn")}
-                      title="Cập nhật số lượng"
-                    >
-                      <MdEdit />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+                  </td>
+                  <td>
+                    <div className={cx("action-buttons")}>
+                      <button
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setShowStockModal(true);
+                          }}
+                          className={cx("stock-btn")}
+                          title="Cập nhật số lượng"
+                      >
+                        <MdEdit />
+                      </button>
+                      <button
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setShowEditModal(true);
+                          }}
+                          className={cx("edit-btn")}
+                          title="Sửa thông tin sản phẩm"
+                      >
+                        <MdEdit />
+                      </button>
+                      <button
+                          onClick={() => handleDeleteProduct(product.id, product.name)}
+                          className={cx("delete-btn")}
+                          title="Xóa sản phẩm"
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
             ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
 
-        {products.length === 0 && !loading && (
-          <div className={cx("empty-state")}>
-            <p>Không tìm thấy sản phẩm nào</p>
-          </div>
+          {products.length === 0 && !loading && (
+              <div className={cx("empty-state")}>
+                <p>Không tìm thấy sản phẩm nào</p>
+              </div>
+          )}
+        </div>
+
+        {/* Stock Update Modal */}
+        {showStockModal && selectedProduct && (
+            <StockUpdateModal
+                product={selectedProduct}
+                onClose={() => {
+                  setShowStockModal(false);
+                  setSelectedProduct(null);
+                }}
+                onUpdate={handleUpdateStock}
+            />
+        )}
+
+        {/* Create Product Modal */}
+        {showCreateModal && (
+            <CreateProductModal
+                onClose={() => setShowCreateModal(false)}
+                onSubmit={handleCreateProduct}
+                categories={categories}
+                brands={brands}
+            />
+        )}
+
+        {/* Edit Product Modal */}
+        {showEditModal && selectedProduct && (
+            <EditProductModal
+                product={selectedProduct}
+                onClose={() => {
+                  setShowEditModal(false);
+                  setSelectedProduct(null);
+                }}
+                onSubmit={handleEditProduct}
+                categories={categories}
+                brands={brands}
+            />
         )}
       </div>
-
-      {/* Stock Update Modal */}
-      {showStockModal && selectedProduct && (
-        <StockUpdateModal
-          product={selectedProduct}
-          onClose={() => {
-            setShowStockModal(false);
-            setSelectedProduct(null);
-          }}
-          onUpdate={handleUpdateStock}
-        />
-      )}
-    </div>
   );
 }
 
@@ -426,73 +537,73 @@ function StockUpdateModal({ product, onClose, onUpdate }) {
   };
 
   return (
-    <div className={cx("modal-overlay")}>
-      <div className={cx("modal")}>
-        <div className={cx("modal-header")}>
-          <h3>Cập nhật số lượng</h3>
-          <button onClick={onClose} className={cx("close-btn")}>×</button>
-        </div>
-
-        <div className={cx("modal-content")}>
-          <div className={cx("product-preview")}>
-            <img
-              src={formatImageUrl(product.image)}
-              alt={product.name}
-              className={cx("preview-image")}
-            />
-            <div className={cx("preview-info")}>
-              <strong>{product.name}</strong>
-              <span>Hiện tại: {product.quantity} sản phẩm</span>
-            </div>
+      <div className={cx("modal-overlay")}>
+        <div className={cx("modal")}>
+          <div className={cx("modal-header")}>
+            <h3>Cập nhật số lượng</h3>
+            <button onClick={onClose} className={cx("close-btn")}>×</button>
           </div>
 
-          <form onSubmit={handleSubmit} className={cx("modal-form")}>
-            <div className={cx("form-group")}>
-              <label>Số lượng mới:</label>
-              <input
-                type="number"
-                min="0"
-                max="10000"
-                required
-                value={newQuantity}
-                onChange={handleQuantityChange}
-                className={cx({ 'error': error })}
-                placeholder="Nhập số lượng (0-10,000)"
+          <div className={cx("modal-content")}>
+            <div className={cx("product-preview")}>
+              <img
+                  src={formatImageUrl(product.image)}
+                  alt={product.name}
+                  className={cx("preview-image")}
               />
-              {error && <span className={cx("error-message")}>{error}</span>}
-            </div>
-
-            <div className={cx("quantity-info")}>
-              <div className={cx("info-row")}>
-                <span>Số lượng hiện tại:</span>
-                <strong>{product.quantity}</strong>
-              </div>
-              <div className={cx("info-row")}>
-                <span>Số lượng mới:</span>
-                <strong className={cx(parseInt(newQuantity) > product.quantity ? 'increase' : 'decrease')}>
-                  {newQuantity || 0}
-                </strong>
-              </div>
-              <div className={cx("info-row")}>
-                <span>Thay đổi:</span>
-                <strong className={cx(parseInt(newQuantity) > product.quantity ? 'increase' : 'decrease')}>
-                  {parseInt(newQuantity || 0) - product.quantity > 0 ? '+' : ''}{parseInt(newQuantity || 0) - product.quantity}
-                </strong>
+              <div className={cx("preview-info")}>
+                <strong>{product.name}</strong>
+                <span>Hiện tại: {product.quantity} sản phẩm</span>
               </div>
             </div>
 
-            <div className={cx("modal-actions")}>
-              <button type="button" onClick={onClose} className={cx("cancel-btn")}>
-                Hủy
-              </button>
-              <button type="submit" disabled={loading || error} className={cx("submit-btn")}>
-                {loading ? 'Đang cập nhật...' : 'Cập nhật'}
-              </button>
-            </div>
-          </form>
+            <form onSubmit={handleSubmit} className={cx("modal-form")}>
+              <div className={cx("form-group")}>
+                <label>Số lượng mới:</label>
+                <input
+                    type="number"
+                    min="0"
+                    max="10000"
+                    required
+                    value={newQuantity}
+                    onChange={handleQuantityChange}
+                    className={cx({ 'error': error })}
+                    placeholder="Nhập số lượng  (0-10,000)"
+                />
+                {error && <span className={cx("error-message")}>{error}</span>}
+              </div>
+
+              <div className={cx("quantity-info")}>
+                <div className={cx("info-row")}>
+                  <span>Số lượng hiện tại:</span>
+                  <strong>{product.quantity}</strong>
+                </div>
+                <div className={cx("info-row")}>
+                  <span>Số lượng mới:</span>
+                  <strong className={cx(parseInt(newQuantity) > product.quantity ? 'increase' : 'decrease')}>
+                    {newQuantity || 0}
+                  </strong>
+                </div>
+                <div className={cx("info-row")}>
+                  <span>Thay đổi:</span>
+                  <strong className={cx(parseInt(newQuantity) > product.quantity ? 'increase' : 'decrease')}>
+                    {parseInt(newQuantity || 0) - product.quantity > 0 ? '+' : ''}{parseInt(newQuantity || 0) - product.quantity}
+                  </strong>
+                </div>
+              </div>
+
+              <div className={cx("modal-actions")}>
+                <button type="button" onClick={onClose} className={cx("cancel-btn")}>
+                  Hủy
+                </button>
+                <button type="submit" disabled={loading || error} className={cx("submit-btn")}>
+                  {loading ? 'Đang cập nhật...' : 'Cập nhật'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 

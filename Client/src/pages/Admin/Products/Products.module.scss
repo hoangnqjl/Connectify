@@ -9,6 +9,40 @@
   margin-bottom: 30px;
 }
 
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    font-size: 16px;
+  }
+}
+
 .title-section {
   h1 {
     font-size: 28px;
@@ -337,6 +371,8 @@
 .action-buttons {
   display: flex;
   gap: 8px;
+  justify-content: center;
+  align-items: center;
 }
 
 .stock-btn {
@@ -354,6 +390,44 @@
 
   &:hover {
     background: #bbdefb;
+    transform: translateY(-1px);
+  }
+}
+
+.edit-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff3e0;
+  color: #f57c00;
+
+  &:hover {
+    background: #ffe0b2;
+    transform: translateY(-1px);
+  }
+}
+
+.delete-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #ffebee;
+  color: #d32f2f;
+
+  &:hover {
+    background: #ffcdd2;
     transform: translateY(-1px);
   }
 }
@@ -385,6 +459,27 @@
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+
+  &.large-modal {
+    max-width: 900px;
+    width: 95%;
+
+    @media (max-width: 768px) {
+      width: 98%;
+      max-width: none;
+      margin: 10px;
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+      margin: 0;
+    }
+  }
 }
 
 .modal-header {
@@ -458,34 +553,246 @@
 }
 
 .modal-form {
+  padding: 20px;
+
   .form-group {
     margin-bottom: 20px;
 
     label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 600;
       color: #263646;
+      font-size: 14px;
+
+      &::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: 500;
+      }
+
+      &.optional::after {
+        content: "";
+      }
     }
 
-    input {
+    input, select, textarea {
       width: 100%;
-      padding: 12px;
+      padding: 12px 16px;
       border: 1px solid #dee2e6;
       border-radius: 8px;
       font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: #fff;
 
       &:focus {
         outline: none;
         border-color: #667eea;
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-1px);
       }
 
       &.error {
         border-color: #dc3545;
         box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        background: #fff5f5;
+      }
+
+      &:disabled {
+        background: #f8f9fa;
+        color: #6c757d;
+        cursor: not-allowed;
       }
     }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.5;
+    }
+
+    input[type="file"] {
+      padding: 16px;
+      border: 2px dashed #dee2e6;
+      background: #f8f9fa;
+      cursor: pointer;
+      text-align: center;
+      position: relative;
+
+      &:hover {
+        border-color: #667eea;
+        background: #f0f4ff;
+      }
+
+      &:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+    }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 12px center;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    // Placeholder styling
+    input::placeholder,
+    textarea::placeholder {
+      color: #9ca3af;
+      font-style: italic;
+    }
+  }
+
+  // Helper text styling
+  .helper-text {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+    font-style: italic;
+  }
+}
+
+.product-form {
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+
+      .form-group.full-width {
+        grid-column: 1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      gap: 12px;
+    }
+  }
+
+  // 🎨 Styling cho các input đặc biệt
+  input[type="number"] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  input[type="file"] {
+    padding: 12px;
+    border: 2px dashed #dee2e6;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+  }
+
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+
+  // 🎨 Special styling for specific form groups
+  .form-group {
+    &.price-group {
+      input {
+        padding-left: 12px;
+      }
+    }
+
+    &.quantity-group {
+      input {
+        padding-left: 12px;
+      }
+    }
+
+    &.image-group {
+      .file-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 12px;
+        padding: 40px 20px;
+        text-align: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          border-color: #667eea;
+          background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .upload-icon {
+          font-size: 48px;
+          margin-bottom: 12px;
+          display: block;
+        }
+
+        .upload-text {
+          font-size: 16px;
+          font-weight: 600;
+          color: #263646;
+          margin-bottom: 8px;
+        }
+
+        .upload-hint {
+          font-size: 12px;
+          color: #6c757d;
+          font-style: italic;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+}
+
+.file-preview {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #e8f5e8;
+  border-radius: 6px;
+  border: 1px solid #c3e6c3;
+
+  span {
+    color: #2e7d32;
+    font-size: 12px;
+    font-weight: 500;
   }
 }
 
@@ -495,6 +802,71 @@
   font-size: 12px;
   margin-top: 4px;
   font-weight: 500;
+}
+
+// 🎨 CSS cho Product Preview trong Edit Modal
+.product-preview {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  .preview-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+
+  .preview-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    strong {
+      font-size: 18px;
+      font-weight: 600;
+      color: #263646;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    span {
+      font-size: 12px;
+      color: #6c757d;
+      background: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      width: fit-content;
+      margin-right: 8px;
+      margin-bottom: 4px;
+      border: 1px solid #e9ecef;
+    }
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+
+    .preview-info {
+      align-items: center;
+
+      span {
+        margin: 2px;
+      }
+    }
+  }
 }
 
 .quantity-info {
@@ -539,41 +911,70 @@
   gap: 12px;
   justify-content: flex-end;
   margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #dee2e6;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
 }
 
 .cancel-btn, .submit-btn {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 14px;
+  min-width: 100px;
+  border: none;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    padding: 14px 24px;
+  }
 }
 
 .cancel-btn {
   background: #f8f9fa;
   color: #6c757d;
-  border: 1px solid #dee2e6;
+  border: 1px solid #dee2e6 !important;
 
   &:hover {
     background: #e9ecef;
+    border-color: #adb5bd !important;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
 .submit-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border: none;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 
   &:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
   }
 }
+
+// 🎨 Animations (removed bounce animation)
 
 // Responsive design
 @media (max-width: 768px) {

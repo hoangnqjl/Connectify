@@ -970,6 +970,24 @@ const adminService = {
     }
   },
 
+  createBrand: async (brandData) => {
+    try {
+      await validateAdminAccess();
+      console.log('🔄 Creating new brand via real API...', brandData);
+      const response = await request.post('/brands', brandData);
+      console.log('✅ Brand created successfully via real API');
+      console.log('📋 Response:', response.data);
+      return {
+        success: true,
+        data: response.data,
+        message: `Thương hiệu "${brandData.brand_name}" đã được thêm thành công`
+      };
+    } catch (error) {
+      console.error('❌ Error creating brand:', error);
+      // Detailed error logging...
+    }
+  },
+
   searchBrands: async (keyword) => {
     try {
       // Get real electronics data and search brands locally

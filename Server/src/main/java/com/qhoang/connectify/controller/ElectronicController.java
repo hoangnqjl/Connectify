@@ -35,7 +35,7 @@ public class ElectronicController {
     @Autowired
     private AuthorizationService authorizationService;
 
-    private final String UPLOAD_DIR = "D:/VKU_learning/HK4/javaFsort/Connectify/Connectify/Data/";
+    private final String UPLOAD_DIR = "D:/Project/ConnectifyShop/Data/";
 
     @GetMapping
     public ResponseEntity<List<Electronic>> getAll() {
@@ -192,10 +192,12 @@ public class ElectronicController {
         // Xử lý ảnh nếu có
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
+                System.out.println(imageFile);
                 String cleanedName = (name != null ? name : existing.getName()).replaceAll("\\s+", "_");
                 int catId = existing.getCategory().getCat_id();
                 String fileName = catId + cleanedName + "_" + (int)(Math.random() * 1000000) + ".jpg";
                 File saveFile = new File(UPLOAD_DIR + fileName);
+
                 imageFile.transferTo(saveFile);
                 existing.setImage("/uploads/" + fileName);
             } catch (IOException e) {
