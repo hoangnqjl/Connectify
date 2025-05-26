@@ -170,7 +170,7 @@ private final String UPLOAD_DIR = "/path/to/your/data/";
 ### **Development**
 ```bash
 cd Server
-mvn tomcat7:run
+mvn cargo:run
 ```
 
 ### **Production**
