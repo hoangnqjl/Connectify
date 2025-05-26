@@ -284,6 +284,7 @@ function AdminOrders() {
                     <div className={cx("customer-info")}>
                       <strong>{order.user?.fullname}</strong>
                       <span>{order.user?.email}</span>
+                      <span>{order.user?.phoneNumber}</span>
                     </div>
                   </td>
                   <td>

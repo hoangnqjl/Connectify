@@ -593,7 +593,8 @@ const adminService = {
         invoiceId: invoice.invoiceId,
         user: {
           fullname: invoice.user?.fullname || 'N/A',
-          email: invoice.user?.email || 'N/A'
+          email: invoice.user?.email || 'N/A',
+          phoneNumber: invoice.user?.phoneNumber
         },
         address: invoice.address,
         purchasedItems: invoice.purchasedItems,
