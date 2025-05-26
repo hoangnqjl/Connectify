@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Random;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +19,21 @@ public class ImageController {
     // macOS: "/Users/username/connectify/data/"
     private final String UPLOAD_DIR = "D:/Project/ConnectifyShop/Data/";
 
+    private final String AVATAR_DIR = "D:/Project/ConnectifyShop/Data/Avatar/";
+
+    @GetMapping("/avatar/{imageName}")
+    public void getAvatarByName(@PathVariable String imageName, HttpServletResponse response) throws IOException {
+        serveAvatar(imageName, response);
+    }
+
+
+
     @GetMapping("/images/{imageName}")
     public void getImageByPath(@PathVariable String imageName, HttpServletResponse response) throws IOException {
         serveImage(imageName, response);
     }
+
+
 
     @GetMapping("/uploads/{imageName}")
     public void getUploadByPath(@PathVariable String imageName, HttpServletResponse response) throws IOException {
@@ -67,6 +79,44 @@ public class ImageController {
             os.flush();
         }
     }
+
+    private void serveAvatar(String imageName, HttpServletResponse response) throws IOException {
+        if (!isValidImageName(imageName)) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid image name");
+            return;
+        }
+
+        File imageFile = new File(AVATAR_DIR + imageName);
+
+        if (!imageFile.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Avatar not found");
+            return;
+        }
+
+        // Xác định content type dựa trên phần mở rộng
+        String contentType = "image/png"; // mặc định .png
+        if (imageName.toLowerCase().endsWith(".jpg") || imageName.toLowerCase().endsWith(".jpeg")) {
+            contentType = "image/jpeg";
+        } else if (imageName.toLowerCase().endsWith(".gif")) {
+            contentType = "image/gif";
+        } else if (imageName.toLowerCase().endsWith(".webp")) {
+            contentType = "image/webp";
+        }
+
+        response.setContentType(contentType);
+        response.setContentLength((int) imageFile.length());
+
+        try (FileInputStream fis = new FileInputStream(imageFile);
+             OutputStream os = response.getOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.flush();
+        }
+    }
+
 
     /**
      * Validate image name to prevent security issues

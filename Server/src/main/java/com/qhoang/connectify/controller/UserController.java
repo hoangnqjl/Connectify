@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @CrossOrigin(origins = {"http://localhost:8000", "http://127.0.0.1:8000"},
         allowCredentials = "true",
@@ -66,33 +67,39 @@ public class UserController {
                                     @RequestParam("phonenumber") String phonenumber,
                                     @RequestParam("password") String password) {
 
-        // Kiểm tra xem email đã tồn tại chưa
+        // Kiểm tra email đã tồn tại chưa
         if (userService.getUserByEmail(email) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("error", "Email đã được sử dụng"));
         }
 
-        // Tạo user_id và khởi tạo đối tượng User
-        String userId = "user_" + System.currentTimeMillis(); // Hoặc dùng UUID nếu muốn
-        User user = new User();
+        // Tạo user_id
+        String userId = "user_" + System.currentTimeMillis();
+
+        // Tạo username từ fullname
         String[] parts = fullname.trim().toLowerCase().split("\\s+");
         String lastName = parts[parts.length - 1];
         char firstInitial = parts[0].charAt(0);
-
         String username = lastName + firstInitial;
+
+        // Gán avatar ngẫu nhiên từ avatar1.png đến avatar10.png
+        int randomIndex = ThreadLocalRandom.current().nextInt(1, 11); // 1 -> 10
+        String randomAvatar = "avatar" + randomIndex + ".png";
+
+        // Khởi tạo user
+        User user = new User();
         user.setUserId(userId);
         user.setUsername(username);
         user.setFullname(fullname);
         user.setEmail(email);
         user.setPhonenumber(phonenumber);
-        // Lưu mật khẩu nguyên văn thay vì mã hóa
-        user.setPassword(password);
-        user.setAvatar(null);
-        user.setType("user"); // Mặc định là user
+        user.setPassword(password); // Nếu cần bảo mật thì nên mã hóa
+        user.setAvatar(randomAvatar); // Gán avatar ngẫu nhiên
+        user.setType("user");
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
 
-        // Lưu người dùng vào cơ sở dữ liệu
+        // Lưu user
         userService.saveUser(user);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -133,12 +140,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-
     @PostMapping("/update-users")
     public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String authHeader,
+                                        @RequestParam(value = "user_id", required = false) String requestedUserId,
                                         @RequestParam(value = "fullname", required = false) String fullname,
                                         @RequestParam(value = "phonenumber", required = false) String phonenumber,
-                                        @RequestParam(value = "password", required = false) String password) {
+                                        @RequestParam(value = "password", required = false) String password,
+                                        @RequestParam(value = "username", required = false) String username,
+                                        @RequestParam(value = "type", required = false) String type) {
+
         String token = authHeader.replace("Bearer ", "");
 
         if (!jwtUtil.validateToken(token)) {
@@ -146,23 +156,65 @@ public class UserController {
                     .body(Collections.singletonMap("error", "Token không hợp lệ"));
         }
 
-        String userId = jwtUtil.extractUsername(token);
-        User user = userService.getUserByUserId(userId);
+        String requesterUserId = jwtUtil.extractUsername(token);
+        User requester = userService.getUserByUserId(requesterUserId);
+
+        if (requester == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("error", "Người yêu cầu không tồn tại"));
+        }
+
+        // Nếu là admin và có truyền user_id → cập nhật người khác
+        // Nếu không phải admin → chỉ được cập nhật chính mình
+        String targetUserId = requester.getType().equalsIgnoreCase("admin") && requestedUserId != null
+                ? requestedUserId
+                : requesterUserId;
+
+        User user = userService.getUserByUserId(targetUserId);
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("error", "Không tìm thấy người dùng"));
+                    .body(Collections.singletonMap("error", "Không tìm thấy người dùng cần cập nhật"));
         }
 
-        // Cập nhật các trường nếu có
-        if (fullname != null && !fullname.trim().isEmpty()) {
+        boolean isUpdated = false;
+
+        if (fullname != null && !fullname.trim().isEmpty() && !fullname.equals(user.getFullname())) {
             user.setFullname(fullname);
+            isUpdated = true;
         }
-        if (phonenumber != null && !phonenumber.trim().isEmpty()) {
+
+        if (phonenumber != null && !phonenumber.trim().isEmpty() && !phonenumber.equals(user.getPhoneNumber())) {
             user.setPhonenumber(phonenumber);
+            isUpdated = true;
         }
+
         if (password != null && !password.trim().isEmpty()) {
-            user.setPassword(password); // ⚠️ Cần mã hóa nếu dùng trong môi trường thật
+            if (!password.equals(user.getPassword())) {
+                user.setPassword(password); // ⚠️ Thực tế nên mã hóa
+                isUpdated = true;
+            }
+        }
+
+        if (username != null && !username.trim().isEmpty()) {
+            if (!username.equals(user.getUsername())) {
+                user.setUsername(username);
+            }
+        }
+
+        if (type != null && !type.trim().isEmpty() && !type.equals(user.getType())) {
+            // Chỉ admin mới được thay đổi type của user
+            if (requester.getType().equalsIgnoreCase("admin")) {
+                user.setType(type);
+                isUpdated = true;
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Collections.singletonMap("error", "Bạn không có quyền thay đổi vai trò người dùng"));
+            }
+        }
+
+        if (!isUpdated) {
+            return ResponseEntity.ok(Collections.singletonMap("message", "Không có thông tin nào được cập nhật"));
         }
 
         user.setUpdatedAt(new Date());
@@ -170,5 +222,74 @@ public class UserController {
 
         return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin thành công"));
     }
+
+
+    @DeleteMapping("/delete-user/{user_id}")
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authHeader,
+                                        @PathVariable("user_id") String userIdToDelete) {
+
+        // Validate token
+        String token = authHeader.replace("Bearer ", "");
+        if (!jwtUtil.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of(
+                            "success", false,
+                            "error", "Token không hợp lệ",
+                            "admin", null,
+                            "targetUser", null
+                    ));
+        }
+
+        // Lấy người gửi yêu cầu
+        String requesterUserId = jwtUtil.extractUsername(token);
+        User requester = userService.getUserByUserId(requesterUserId);
+
+        if (requester == null || !requester.getType().equalsIgnoreCase("admin")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of(
+                            "success", false,
+                            "error", "Bạn không có quyền xóa người dùng",
+                            "admin", Map.of("userId", requesterUserId),
+                            "targetUser", Map.of("userId", userIdToDelete)
+                    ));
+        }
+
+        // Kiểm tra người dùng cần xóa có tồn tại không
+        User targetUser = userService.getUserByUserId(userIdToDelete);
+        if (targetUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of(
+                            "success", false,
+                            "error", "Người dùng không tồn tại",
+                            "admin", Map.of("userId", requesterUserId, "fullname", requester.getFullname()),
+                            "targetUser", Map.of("userId", userIdToDelete)
+                    ));
+        }
+
+        // Không cho phép admin tự xóa chính mình
+        if (requesterUserId.equals(userIdToDelete)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of(
+                            "success", false,
+                            "error", "Bạn không thể tự xóa chính mình",
+                            "admin", Map.of("userId", requesterUserId, "fullname", requester.getFullname()),
+                            "targetUser", Map.of("userId", userIdToDelete, "fullname", targetUser.getFullname())
+                    ));
+        }
+
+        // Thực hiện xóa
+        userService.deleteUser(userIdToDelete);
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Xóa người dùng thành công",
+                "admin", Map.of("userId", requesterUserId, "fullname", requester.getFullname()),
+                "targetUser", Map.of("userId", targetUser.getUserId(), "fullname", targetUser.getFullname())
+        ));
+    }
+
+
+
+
+
 
 }

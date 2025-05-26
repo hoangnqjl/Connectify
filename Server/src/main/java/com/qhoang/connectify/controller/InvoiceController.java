@@ -83,6 +83,7 @@ public class InvoiceController {
             @RequestParam String purchasedItems, // ${tensanpham} SL {$sl}, ${tensanpham2} SL {SL_sp2}
             @RequestParam Long totalPrice, // tông gia tinh tren frontend
             @RequestParam String status, // mac dinh co gia tri là processing
+            @RequestParam String note,
             @RequestHeader("Authorization") String authHeader) {
 
         User user = extractUserFromToken(authHeader);
@@ -100,8 +101,10 @@ public class InvoiceController {
         invoice.setAddress(address);
         invoice.setPaymentMethod(paymentMethod);
         invoice.setPurchasedItems(purchasedItems);
+        invoice.setNote(note);
         invoice.setTotalPrice(totalPrice);
         invoice.setStatus(status);
+
 
         invoiceService.addInvoice(invoice);
 

@@ -36,6 +36,9 @@ public class Invoice {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "note", nullable = false)
+    private String note;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -125,5 +128,13 @@ public class Invoice {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }
