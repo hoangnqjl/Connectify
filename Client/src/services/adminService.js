@@ -1,6 +1,8 @@
 import request from '../utils/request';
 import authService from './authService';
 
+
+
 // Helper function to validate admin access before API calls
 const validateAdminAccess = async () => {
   const token = localStorage.getItem('token');
@@ -103,22 +105,34 @@ const adminService = {
 
   updateUser: async (userId, userData) => {
     try {
-      // Validate admin access before making API call
+      // Xác thực quyền admin trước khi gọi API
       await validateAdminAccess();
 
-      console.log('🔄 Mock updating user (no update endpoint available):', userId, userData);
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Không có token');
 
-      // MOCK IMPLEMENTATION - Backend doesn't have user update endpoint
-      // This would require a new endpoint like PUT /auth/users/{id} or PUT /admin/users/{id}
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const formData = new URLSearchParams();
 
-      console.log('✅ Mock user update successful');
+      // Nếu là admin cập nhật người khác → truyền thêm user_id
+      if (userId) formData.append('user_id', userId);
+      if (userData.fullname) formData.append('fullname', userData.fullname);
+      if (userData.phonenumber) formData.append('phonenumber', userData.phonenumber);
+      if (userData.password) formData.append('password', userData.password);
+      if (userData.type) formData.append('type', userData.type);
+
+      const response = await request.post('/auth/update-users', formData.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
       return {
         success: true,
         data: {
-          userId: userId,
+          userId,
           ...userData,
-          message: `User ${userId} đã được cập nhật thành công (Mock)`
+          message: response.data.message || 'Đã cập nhật thành công',
         },
       };
     } catch (error) {
@@ -129,47 +143,48 @@ const adminService = {
 
   deleteUser: async (userId) => {
     try {
-      // Validate admin access before making API call
-      await validateAdminAccess();
+      await validateAdminAccess(); // Kiểm tra quyền admin trước
 
-      console.log('🔄 Mock deleting user (no delete endpoint available):', userId);
+      const token = localStorage.getItem('token');
 
-      // MOCK IMPLEMENTATION - Backend doesn't have user delete endpoint
-      // This would require a new endpoint like DELETE /auth/users/{id} or DELETE /admin/users/{id}
-
-      // Get user data to check if it's an admin (for frontend validation)
+      // Lấy danh sách user để kiểm tra
       const usersResult = await adminService.getAllUsers();
-      if (!usersResult.success) {
-        return usersResult;
-      }
+      if (!usersResult.success) return usersResult;
 
       const userToDelete = usersResult.data.find(user => user.userId === userId);
       if (!userToDelete) {
         return { success: false, message: 'Không tìm thấy user cần xóa' };
       }
 
-      // Prevent deleting admin users (frontend validation)
       if (userToDelete.type === 'admin') {
-        return {
-          success: false,
-          message: 'Không thể xóa tài khoản admin. Chỉ có thể xóa tài khoản user thường.'
-        };
+        return { success: false, message: 'Không thể xóa tài khoản admin.' };
       }
 
-      await new Promise(resolve => setTimeout(resolve, 500));
-      console.log('✅ Mock user deletion successful');
-      return {
-        success: true,
-        data: {
-          userId: userId,
-          message: `User ${userToDelete.fullname} đã được xóa thành công (Mock)`
+      // Gửi request DELETE với userId trong URL
+      const response = await request.delete(`/auth/delete-user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      };
+      });
+
+      if (response.status === 200) {
+        return {
+          success: true,
+          data: {
+            userId: userId,
+            message: `User ${userToDelete.fullname} đã được xóa thành công.`,
+          },
+        };
+      } else {
+        return { success: false, message: 'Không thể xóa người dùng' };
+      }
     } catch (error) {
       const message = error.response?.data?.error || error.message || 'Không thể xóa người dùng';
       return { success: false, message };
     }
   },
+
+
 
   getAllUsers: async () => {
     try {
@@ -188,7 +203,7 @@ const adminService = {
       };
 
     } catch (error) {
-      console.error('� All user endpoints failed:', error);
+      console.error('  All user endpoints failed:', error);
       const message = error.response?.data?.error || error.message || 'Không thể lấy danh sách người dùng từ API';
       return { success: false, message };
     }
@@ -211,10 +226,10 @@ const adminService = {
       if (keyword) {
         const searchTerm = keyword.toLowerCase();
         users = users.filter(user =>
-          user.fullname?.toLowerCase().includes(searchTerm) ||
-          user.email?.toLowerCase().includes(searchTerm) ||
-          user.userId?.toLowerCase().includes(searchTerm) ||
-          user.username?.toLowerCase().includes(searchTerm) // Additional field
+            user.fullname?.toLowerCase().includes(searchTerm) ||
+            user.email?.toLowerCase().includes(searchTerm) ||
+            user.userId?.toLowerCase().includes(searchTerm) ||
+            user.username?.toLowerCase().includes(searchTerm) // Additional field
         );
       }
 
@@ -269,15 +284,15 @@ const adminService = {
 
       // Filter low stock products
       const lowStockProducts = products
-        .filter(p => p.quantity <= threshold && p.quantity > 0)
-        .map(p => ({
-          id: p.id,
-          name: p.name,
-          quantity: p.quantity,
-          price: p.price,
-          category: p.category?.cat_name || 'Unknown',
-          brand: p.brand?.brand_name || 'Unknown'
-        }));
+          .filter(p => p.quantity <= threshold && p.quantity > 0)
+          .map(p => ({
+            id: p.id,
+            name: p.name,
+            quantity: p.quantity,
+            price: p.price,
+            category: p.category?.cat_name || 'Unknown',
+            brand: p.brand?.brand_name || 'Unknown'
+          }));
 
       return {
         success: true,
@@ -423,20 +438,20 @@ const adminService = {
       if (filters.keyword) {
         const searchTerm = filters.keyword.toLowerCase();
         products = products.filter(product =>
-          product.name?.toLowerCase().includes(searchTerm) ||
-          product.id?.toString().includes(searchTerm)
+            product.name?.toLowerCase().includes(searchTerm) ||
+            product.id?.toString().includes(searchTerm)
         );
       }
 
       if (filters.categoryId) {
         products = products.filter(product =>
-          product.category?.cat_id?.toString() === filters.categoryId
+            product.category?.cat_id?.toString() === filters.categoryId
         );
       }
 
       if (filters.brandId) {
         products = products.filter(product =>
-          product.brand?.brand_id?.toString() === filters.brandId
+            product.brand?.brand_id?.toString() === filters.brandId
         );
       }
 
@@ -476,37 +491,37 @@ const adminService = {
 
       // Calculate revenue
       const totalRevenue = orders
-        .filter(o => o.status !== 'cancelled')
-        .reduce((sum, order) => sum + parseInt(order.totalPrice || 0), 0)
-        .toString();
+          .filter(o => o.status !== 'cancelled')
+          .reduce((sum, order) => sum + parseInt(order.totalPrice || 0), 0)
+          .toString();
 
       // Calculate today's revenue
       const today = new Date();
       const todayRevenue = orders
-        .filter(o => {
-          const orderDate = new Date(o.createdAt);
-          return orderDate.toDateString() === today.toDateString() && o.status !== 'cancelled';
-        })
-        .reduce((sum, order) => sum + parseInt(order.totalPrice || 0), 0)
-        .toString();
+          .filter(o => {
+            const orderDate = new Date(o.createdAt);
+            return orderDate.toDateString() === today.toDateString() && o.status !== 'cancelled';
+          })
+          .reduce((sum, order) => sum + parseInt(order.totalPrice || 0), 0)
+          .toString();
 
       // Calculate this month's revenue
       const thisMonth = new Date();
       const revenueThisMonth = orders
-        .filter(o => {
-          const orderDate = new Date(o.createdAt);
-          return orderDate.getMonth() === thisMonth.getMonth() &&
-                 orderDate.getFullYear() === thisMonth.getFullYear() &&
-                 o.status !== 'cancelled';
-        })
-        .reduce((sum, order) => sum + parseInt(order.totalPrice || 0), 0)
-        .toString();
+          .filter(o => {
+            const orderDate = new Date(o.createdAt);
+            return orderDate.getMonth() === thisMonth.getMonth() &&
+                orderDate.getFullYear() === thisMonth.getFullYear() &&
+                o.status !== 'cancelled';
+          })
+          .reduce((sum, order) => sum + parseInt(order.totalPrice || 0), 0)
+          .toString();
 
       // Calculate average order value
       const validOrders = orders.filter(o => o.status !== 'cancelled');
       const averageOrderValue = validOrders.length > 0
-        ? Math.round(parseInt(totalRevenue) / validOrders.length).toString()
-        : "0";
+          ? Math.round(parseInt(totalRevenue) / validOrders.length).toString()
+          : "0";
 
       const orderStats = {
         totalOrders,
@@ -580,9 +595,11 @@ const adminService = {
           fullname: invoice.user?.fullname || 'N/A',
           email: invoice.user?.email || 'N/A'
         },
+        address: invoice.address,
         purchasedItems: invoice.purchasedItems,
         totalPrice: invoice.totalPrice,
         paymentMethod: invoice.paymentMethod,
+        note: invoice.note,
         status: invoice.status || 'pending',
         createdAt: invoice.createdAt
       }));
@@ -597,16 +614,16 @@ const adminService = {
       if (filters.userId) {
         const searchTerm = filters.userId.toLowerCase();
         filteredOrders = filteredOrders.filter(order =>
-          order.user.email.toLowerCase().includes(searchTerm) ||
-          order.user.fullname.toLowerCase().includes(searchTerm) ||
-          order.invoiceId.toLowerCase().includes(searchTerm)
+            order.user.email.toLowerCase().includes(searchTerm) ||
+            order.user.fullname.toLowerCase().includes(searchTerm) ||
+            order.invoiceId.toLowerCase().includes(searchTerm)
         );
       }
 
       if (filters.fromDate) {
         const fromDate = new Date(filters.fromDate);
         filteredOrders = filteredOrders.filter(order =>
-          new Date(order.createdAt) >= fromDate
+            new Date(order.createdAt) >= fromDate
         );
       }
 
@@ -614,7 +631,7 @@ const adminService = {
         const toDate = new Date(filters.toDate);
         toDate.setHours(23, 59, 59, 999); // End of day
         filteredOrders = filteredOrders.filter(order =>
-          new Date(order.createdAt) <= toDate
+            new Date(order.createdAt) <= toDate
         );
       }
 
@@ -704,27 +721,42 @@ const adminService = {
     }
   },
 
+
   updateOrderStatus: async (invoiceId, status) => {
     try {
-      // Mock successful update since backend doesn't have complete order system yet
-      console.log(`Mock: Updating order ${invoiceId} to status ${status}`);
+      const token = localStorage.getItem('token');
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      return {
-        success: true,
-        data: {
-          invoiceId: invoiceId,
-          status: status,
-          message: `Đơn hàng ${invoiceId} đã được cập nhật thành ${status}`
+      const response = await request.post(`/invoices/${invoiceId}/status`, null, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
         },
-      };
+        params: {
+          status: status,
+        },
+      });
+
+      if (response.status === 200) {
+        return {
+          success: true,
+          data: {
+            invoiceId,
+            status,
+            message: response.data || `Đơn hàng ${invoiceId} đã được cập nhật thành ${status}`,
+          },
+        };
+      } else {
+        return {
+          success: false,
+          message: response.data || 'Không thể cập nhật trạng thái đơn hàng',
+        };
+      }
     } catch (error) {
-      const message = error.response?.data?.error || 'Không thể cập nhật trạng thái đơn hàng';
+      const message =
+          error.response?.data || 'Không thể cập nhật trạng thái đơn hàng';
       return { success: false, message };
     }
   },
+
 
   bulkUpdateOrderStatus: async (invoiceIds, status) => {
     try {
@@ -953,7 +985,7 @@ const adminService = {
 
       // Filter brands by keyword (case insensitive)
       const filteredBrands = uniqueBrands.filter(brand =>
-        brand.brand_name.toLowerCase().includes(keyword.toLowerCase())
+          brand.brand_name.toLowerCase().includes(keyword.toLowerCase())
       );
 
       console.log(`🔍 Brand search for "${keyword}":`, filteredBrands.length, 'results');

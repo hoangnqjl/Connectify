@@ -21,13 +21,14 @@
 
 .tabs .tab-item {
   display: flex;
-  align-items: cebnter;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
-  padding: 10px 18px;
+  padding: 10px 25%;
   border-radius: 30px;
   margin-bottom: 20px;
   cursor: pointer;
+  gap: 10px;
 }
 
 .tabs .tab-item.active {

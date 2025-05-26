@@ -133,7 +133,7 @@ function LaptopPage() {
       <div className={cx('w-full', 'flex', 'flex-wrap', 'gap-[10px]')}>
         {laptops.length > 0 ? (
           laptops.map((product) => (
-            <Item key={product.id} product={product} />
+            <Item key={product.id} product={product} className='min-w-[280px] flex-auto max-w-[380px] flex-grow ]' />
           ))
         ) : (
           <div className={cx('text-[#888]', 'mt-[20px]')}>

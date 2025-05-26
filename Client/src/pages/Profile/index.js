@@ -9,16 +9,25 @@ import { FaHistory } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useUser } from "@/contexts/UserContext";
 import invoiceService from "@/services/invoiceService";
+import authService from "@/services/authService";
 import { formatPrice, formatAvatarUrl } from "@/utils/formatPrice";
 
 const cx = classNames.bind(styles)
 function Profile() {
     const [activeTab, setActiveTab] = useState("info");
-    const { user, token } = useUser();
+    const { user, token, setUser } = useUser();
     const [invoices, setInvoices] = useState([]);
     const [pendingInvoices, setPendingInvoices] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [formData, setFormData] = useState({
+        username: user?.username || '',
+        fullname: user?.fullname || '',
+        phoneNumber: user?.phoneNumber || '',
+        password: '',
+    });
+    const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState(null);
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -48,6 +57,54 @@ function Profile() {
             fetchInvoices();
         }
     }, [activeTab, token]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setFormError(null);
+        setFormSuccess(null);
+
+        const updateData = {};
+        if (formData.username && formData.username !== user?.username) {
+            updateData.username = formData.username;
+        }
+        if (formData.fullname && formData.fullname !== user?.fullname) {
+            updateData.fullname = formData.fullname;
+        }
+        if (formData.phoneNumber && formData.phoneNumber !== user?.phoneNumber) {
+            updateData.phonenumber = formData.phoneNumber;
+        }
+        if (formData.password) {
+            updateData.password = formData.password;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            setFormError("Không có thay đổi để cập nhật.");
+            return;
+        }
+
+        try {
+            const response = await authService.updateUser(updateData);
+            if (response.success) {
+                setFormSuccess(response.message);
+                setUser({
+                    ...user,
+                    username: updateData.username || user.username,
+                    fullname: updateData.fullname || user.fullname,
+                    phoneNumber: updateData.phonenumber || user.phoneNumber,
+                });
+                setFormData({ ...formData, password: '' });
+            } else {
+                setFormError(response.message);
+            }
+        } catch (err) {
+            setFormError("Cập nhật thất bại: " + err.message);
+        }
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -99,7 +156,6 @@ function Profile() {
                       </Link>
                     )}
                     </div>
-
                 </div>
                 <div className={cx('content-tab')}>
                     {activeTab === "info" && <div className={cx('information')}>
@@ -109,38 +165,61 @@ function Profile() {
                                   alt=''
                                   src={formatAvatarUrl(user?.avatar)}
                                   onError={(e) => {
-                                    e.target.src = "/images/testavt.png"; // Fallback avatar
+                                    e.target.src = "/images/testavt.png";
                                   }}
                                 />
                                 <div className={cx('flex','flex-col')}>
                                     <h1 className={cx('text-[20px]','font-semibold','text-[#263646]')}>{user?.fullname || 'Fullname'}</h1>
-                                    <span className={cx('text-[16px]','mt-[10px]')}>{user?.userId}</span>
+                                    <span className={cx('text-[16px]','mt-[5px]')}>{user?.userId}</span>
                                 </div>
                             </div>
                             <div className={cx('w-full')}>
                                 <h1 className={cx('text-[18px]','text-[#263646]','font-medium','mb-[20px]')}>Thông tin của bạn</h1>
-                                <form>
+                                <form onSubmit={handleSubmit}>
                                     <div className={cx('w-full','flex','justify-between','items-center')}>
                                         <div className={cx('form-group')}>
                                             <label>Họ và tên</label>
-                                            <input placeholder={user?.fullname || 'fullname...'}/>
+                                            <input
+                                                name="fullname"
+                                                value={formData.fullname}
+                                                onChange={handleInputChange}
+                                                placeholder={user?.fullname || "Họ và tên..."}
+                                            />
                                         </div>
-                                         <div className={cx('form-group')}>
-                                            <label>Username</label>
-                                            <input placeholder={user?.username || 'username...'}/>
-                                        </div>
-                                    </div>
-                                     <div className={cx('w-full','flex','justify-between','items-center','my-[20px]')}>
                                         <div className={cx('form-group')}>
-                                            <label>Email</label>
-                                            <input placeholder={user?.email || 'email...'}/>
-                                        </div>
-                                         <div className={cx('form-group')}>
-                                            <label>Số điện thoại</label>
-                                            <input placeholder={user?.phoneNumber || 'phonenumber...'}/>
+                                            <label>Username</label>
+                                            <input
+                                                name="username"
+                                                value={formData.username}
+                                                onChange={handleInputChange}
+                                                placeholder={user?.username || "Username..."}
+                                            />
                                         </div>
                                     </div>
-                                    <button className={cx('btn-submit')}>Lưu thông tin</button>
+                                    <div className={cx('w-full','flex','justify-between','items-center','my-[20px]')}>
+                                        <div className={cx('form-group')}>
+                                            <label>Mật khẩu</label>
+                                            <input
+                                                name="password"
+                                                type="password"
+                                                value={formData.password}
+                                                onChange={handleInputChange}
+                                                placeholder="Mật khẩu..."
+                                            />
+                                        </div>
+                                        <div className={cx('form-group')}>
+                                            <label>Số điện thoại</label>
+                                            <input
+                                                name="phoneNumber"
+                                                value={formData.phoneNumber}
+                                                onChange={handleInputChange}
+                                                placeholder={user?.phoneNumber || "Số điện thoại..."}
+                                            />
+                                        </div>
+                                    </div>
+                                    {formError && <div className={cx('text-red-500', 'my-[10px]')}>{formError}</div>}
+                                    {formSuccess && <div className={cx('text-green-500', 'my-[10px]')}>{formSuccess}</div>}
+                                    <button type="submit" className={cx('btn-submit')}>Lưu thông tin</button>
                                 </form>
                             </div>
                         </div>

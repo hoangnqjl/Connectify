@@ -14,22 +14,24 @@
     padding-right: 40px;
 }
 
-.tabs{
+.tabs {
+  width: 100%;
+  .tab-item {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-start; 
     width: 100%;
-    .tab-item{
-        display:flex; 
-        align-items: cebnter;
-        justify-content: center;
-        width: 100%;
-        padding:10px 18px;
-        border-radius: 30px;
-        margin-bottom: 20px;
-        cursor:pointer;
-        &.active {
-        background-color: #E8E8E8;
-        }
+    padding: 10px 25%;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    gap: 10px; 
+    &.active {
+      background-color: #E8E8E8;
     }
+  }
 }
+
 .content-tab{
     width: 69%;
     padding:0 0 0 20px;

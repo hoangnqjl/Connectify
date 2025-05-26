@@ -5,7 +5,7 @@ import { IoAt } from "react-icons/io5";
 import { LuKeyRound } from "react-icons/lu";
 import authService from "@/services/authService";
 import { useUser } from "@/contexts/UserContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const cx = classNames.bind(styles);
 
@@ -13,10 +13,33 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const { setUser } = useUser();
+  const { setUser, user } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  // Kiểm tra token khi component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = authService.getToken();
+      if (token && !user) {
+        // Nếu có token nhưng chưa có user, gọi getMe để lấy thông tin
+        const userResult = await authService.getMe();
+        if (userResult.success) {
+          setUser(userResult.user);
+          navigate("/", { replace: true });
+        } else {
+          // Nếu token không hợp lệ, xóa token
+          localStorage.removeItem("token");
+        }
+      } else if (token && user) {
+        // Nếu đã có token và user, chuyển hướng ngay
+        navigate("/", { replace: true });
+      }
+    };
+
+    checkAuth();
+  }, [navigate, setUser, user]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,7 +48,6 @@ function LoginPage() {
     const result = await authService.login(email, password);
 
     if (result.success) {
-      // Fetch user info after successful login
       const userResult = await authService.getMe();
       if (userResult.success) {
         setUser(userResult.user);

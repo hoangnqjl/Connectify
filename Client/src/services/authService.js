@@ -77,6 +77,43 @@ const authService = {
       return { success: false, message };
     }
   },
+  
+ updateUser: async ({ username, fullname, phonenumber, password }) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return { success: false, message: 'Chưa đăng nhập.' };
+      }
+
+      const params = {};
+      if (username) params.username = username;
+      if (fullname) params.fullname = fullname;
+      if (phonenumber) params.phonenumber = phonenumber;
+      if (password) params.password = password;
+
+      const response = await request.post(
+        '/auth/update-users',
+        QueryString.stringify(params),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return {
+        success: true,
+        message: response.data.message || 'Cập nhật thông tin thành công',
+      };
+    } catch (error) {
+      const message = error.response?.data?.error || 'Cập nhật thông tin thất bại.';
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+      }
+      return { success: false, message };
+    }
+  },
 
   // Đăng xuất
   logout: () => {

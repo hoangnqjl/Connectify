@@ -6,7 +6,8 @@ import { LuKeyRound } from "react-icons/lu";
 import { AiOutlineUser } from "react-icons/ai";
 import { IoCallOutline } from "react-icons/io5";
 import authService from "@/services/authService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "@/contexts/UserContext";
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +21,29 @@ function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const { setUser, user } = useUser();
 
+   useEffect(() => {
+    const checkAuth = async () => {
+      const token = authService.getToken();
+      if (token && !user) {
+        // Nếu có token nhưng chưa có user, gọi getMe để lấy thông tin
+        const userResult = await authService.getMe();
+        if (userResult.success) {
+          setUser(userResult.user);
+          navigate("/", { replace: true });
+        } else {
+          // Nếu token không hợp lệ, xóa token
+          localStorage.removeItem("token");
+        }
+      } else if (token && user) {
+        // Nếu đã có token và user, chuyển hướng ngay
+        navigate("/", { replace: true });
+      }
+    };
+
+    checkAuth();
+  }, [navigate, setUser, user]);
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");

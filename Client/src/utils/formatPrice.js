@@ -84,5 +84,5 @@ export const formatAvatarUrl = (avatarPath) => {
   }
 
   // Otherwise, construct the full URL
-  return `${baseUrl}/images/${avatarPath}`;
+  return `${baseUrl}/avatar/${avatarPath}`;
 };

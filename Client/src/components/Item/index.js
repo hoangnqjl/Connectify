@@ -7,13 +7,13 @@ import { formatPrice, formatImageUrl } from "@/utils/formatPrice";
 
 const cx = classNames.bind(styles);
 
-function Item({ product }) {
+function Item({ product ,className }) {
   const rating = product.rating || 5.0;
   const imageSrc = formatImageUrl(product.image);
   const formattedPrice = formatPrice(product.price);
 
   return (
-    <Link to={`/product/${product.id}`} className={cx("wrapper")}>
+    <Link to={`/product/${product.id}`} className={cx("wrapper",className)}>
       <div className={cx("content")}>
         <div className={cx("rate", "flex", "items-center")}>
           <FaStar className={cx("text-[14px]", "text-white", "mr-[5px]")} />
@@ -21,12 +21,12 @@ function Item({ product }) {
             {rating}
           </span>
         </div>
-        <div className={cx("image-product")}>
+        <div className={cx("image-product flex justify-center mb-[10px]")}>
           <img
             alt={product.name}
             src={imageSrc}
             onError={(e) => {
-              e.target.src = "/images/item.jpg"; // Fallback image
+              e.target.src = "/images/item.jpg";
             }}
           />
         </div>

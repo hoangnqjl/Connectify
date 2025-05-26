@@ -33,22 +33,18 @@ function MobilePage() {
           const filteredMobiles = productResult.data.filter(
             (product) => product.category.cat_id === 1
           );
-          console.log("Filtered Mobiles:", filteredMobiles); // Log danh sách điện thoại
 
           // Lấy danh sách brand_id từ filteredMobiles
           const mobileBrandIds = new Set(
             filteredMobiles.map((product) => {
               const brandId = product.brand.brand_id.toLowerCase();
-              console.log("Product Brand ID:", brandId); // Log từng brand_id
               return brandId;
             })
           );
-          console.log("Mobile Brand IDs:", Array.from(mobileBrandIds)); // Log tập hợp brand_id
 
           // Lọc thương hiệu có sản phẩm điện thoại
           const filteredBrands = brandResult.data.filter((brand) => {
             const isIncluded = mobileBrandIds.has(brand.brand_id.toLowerCase());
-            console.log(`Brand ${brand.brand_name} included:`, isIncluded); // Log trạng thái từng thương hiệu
             return isIncluded;
           });
           console.log("Filtered Brands:", filteredBrands); // Log danh sách thương hiệu sau lọc
@@ -149,7 +145,7 @@ function MobilePage() {
       <div className={cx('w-full', 'flex', 'flex-wrap', 'gap-[10px]')}>
         {mobiles.length > 0 ? (
           mobiles.map((product) => (
-            <Item key={product.id} product={product} />
+            <Item key={product.id} product={product} className='min-w-[280px] flex-auto max-w-[380px] flex-grow ]' />
           ))
         ) : (
           <div className={cx('text-[#888]', 'mt-[20px]')}>

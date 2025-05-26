@@ -177,7 +177,7 @@ function ProductDetail() {
                     {buyButtonText}
                     {!isAdmin && isInStock && product.quantity && (
                       <span className={cx("quantity-info")}>
-                        (Còn {product.quantity})
+                        {/* (Còn {product.quantity}) */}
                       </span>
                     )}
                   </Link>

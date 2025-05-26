@@ -51,6 +51,7 @@ function AdminOrders() {
       const result = await adminService.getAllOrders();
       if (result.success) {
         setOrders(result.data);
+        // console.log(result.data)
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -261,7 +262,9 @@ function AdminOrders() {
               <th>Khách hàng</th>
               <th>Sản phẩm</th>
               <th>Tổng tiền</th>
+              <th>Địa chỉ</th>
               <th>Phương thức TT</th>
+              <th>Ghi chú</th>
               <th>Trạng thái</th>
               <th>Ngày tạo</th>
               <th>Thao tác</th>
@@ -291,11 +294,25 @@ function AdminOrders() {
                   <td className={cx("total-price")}>
                     {formatPrice(order.totalPrice)}
                   </td>
+
+                  <td>
+                    <div className={cx("order-address")}>
+                      {order.address || 'Không có địa chỉ'}
+                    </div>
+                  </td>
+
                   <td>
                     <span className={cx("payment-method")}>
                       {order.paymentMethod === 'cod' ? 'COD' : 'Online'}
                     </span>
                   </td>
+
+                  <td>
+                    <div className={cx("order-address")}>
+                      {order.note || 'Không có ghi chú'}
+                    </div>
+                  </td>
+
                   <td>
                     <div className={cx("status-wrapper")}>
                       <StatusIcon className={cx("status-icon", getStatusColor(order.status))} />
@@ -304,6 +321,8 @@ function AdminOrders() {
                       </span>
                     </div>
                   </td>
+
+
                   <td>{formatDate(order.createdAt)}</td>
                   <td>
                     <div className={cx("action-buttons")}>
