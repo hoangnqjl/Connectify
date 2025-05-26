@@ -101,6 +101,7 @@ function CartPage() {
       purchasedItems: purchasedItems.join(", "),
       totalPrice,
       status: "processing",
+      note: formData.get('note'),
     };
 
     try {
@@ -147,7 +148,7 @@ function CartPage() {
         </Link>
         <div className={cx("body", "flex", "items-start", "justify-between")}>
           <div className={cx("product", "w-[40%]")}>
-            <div className={cx("product-list", "max-h-[500px]", "overflow-y-auto")}>
+            <div className={cx("product-list", "max-h-[700px]", "overflow-y-auto",'px-[10px]')}>
               {cartItems.length > 0 ? (
                 cartItems.map((item) => {
                   const imageSrc = formatImageUrl(item.electronic.image);

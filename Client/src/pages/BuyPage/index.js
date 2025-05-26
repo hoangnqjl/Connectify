@@ -89,6 +89,7 @@ function BuyPage() {
       purchasedItems: purchasedItem,
       totalPrice,
       status: "processing",
+      note: formData.get('note'),
     };
 
     const result = await invoiceService.createInvoice(invoicePayload);

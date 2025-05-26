@@ -17,9 +17,9 @@ public class ImageController {
     // Windows: "D:/Your/Path/To/Data/"
     // Linux: "/home/username/connectify/data/"
     // macOS: "/Users/username/connectify/data/"
-    private final String UPLOAD_DIR = "D:/Project/ConnectifyShop/Data/";
+    private final String UPLOAD_DIR = "C:/Users/Lenovo/IdeaProjects/JVW/Connectify/Data/";
 
-    private final String AVATAR_DIR = "D:/Project/ConnectifyShop/Data/Avatar/";
+    private final String AVATAR_DIR = "C:/Users/Lenovo/IdeaProjects/JVW/Connectify/Data/";
 
     @GetMapping("/avatar/{imageName}")
     public void getAvatarByName(@PathVariable String imageName, HttpServletResponse response) throws IOException {

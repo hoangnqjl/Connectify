@@ -1,7 +1,7 @@
 import request from '../utils/request';
 
 const invoiceService = {
-  createInvoice: async ({ address, paymentMethod, purchasedItems, totalPrice, status }) => {
+  createInvoice: async ({ address, paymentMethod, purchasedItems, totalPrice, status ,note }) => {
     try {
       const formData = new URLSearchParams();
       formData.append("address", address);
@@ -9,6 +9,7 @@ const invoiceService = {
       formData.append("purchasedItems", purchasedItems);
       formData.append("totalPrice", totalPrice);
       formData.append("status", status);
+      formData.append("note", note);
 
       const response = await request.post("/invoices", formData, {
         headers: {

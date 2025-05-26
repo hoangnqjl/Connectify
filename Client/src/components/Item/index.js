@@ -21,10 +21,11 @@ function Item({ product ,className }) {
             {rating}
           </span>
         </div>
-        <div className={cx("image-product flex justify-center mb-[10px]")}>
+        <div className={cx("image-product",' flex ','justify-center' ,'mb-[10px]')}>
           <img
             alt={product.name}
             src={imageSrc}
+            className="img-product"
             onError={(e) => {
               e.target.src = "/images/item.jpg";
             }}

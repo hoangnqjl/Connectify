@@ -11,29 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd412f0a-5ec3-430e-96eb-2cfe10b33f47" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.gitattributes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Server/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Server/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Server/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/BrandController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/BrandController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/ElectronicController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/ElectronicController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/InvoiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/InvoiceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/entities/Brand.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/entities/Brand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/entities/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/entities/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/repository/BrandRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/repository/BrandRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/repository/InvoiceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/repository/InvoiceRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/service/InvoiceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/service/InvoiceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/utils/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/utils/AppConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/utils/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/utils/WebConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/main/webapp/WEB-INF/spring-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/webapp/WEB-INF/spring-config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/test/java/com/qhoang/connectify/ConnectifyApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/components/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/components/Header/Header.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/components/Header/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/components/Header/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/ImageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/com/qhoang/connectify/controller/ImageController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,8 +69,9 @@
     "Tomcat Server.Connectify web.executor": "Run",
     "Tomcat Server.Connectify.executor": "Run",
     "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Project/ConnectifyShop",
+    "last_opened_file_path": "C:/Users/Lenovo/IdeaProjects/JVW/Connectify",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -129,12 +110,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="Application" factoryName="Application">
-      <module name="Connectify" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="TomeeConfiguration" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
       <deployment />
       <server-settings>
@@ -210,105 +185,6 @@
       </ConfigurationWrapper>
       <method v="2">
         <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Connectify web" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat " ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="openjdk-21" show_console_on_std_err="true" show_console_on_std_out="true">
-      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:1511/home" />
-      <option name="BROWSER_ID" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
-      <option name="UPDATING_POLICY" value="restart-server" />
-      <deployment>
-        <artifact name="Connectify:war exploded">
-          <settings>
-            <option name="CONTEXT_PATH" value="/Connectify_war_exploded" />
-          </settings>
-        </artifact>
-        <artifact name="Connectify:war">
-          <settings>
-            <option name="CONTEXT_PATH" value="/Connectify_war" />
-          </settings>
-        </artifact>
-      </deployment>
-      <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="d9d1fabe-a331-4ef7-9519-5ebf826fce41" />
-        <option name="DEPLOY_TOMCAT_APPS" value="true" />
-        <option name="HTTP_PORT" value="1511" />
-        <option name="PRESERVE_SESSIONS" value="true" />
-      </server-settings>
-      <output_file path="%IDEA_RUN:TOMCAT_HOME%/logs" is_save="true" />
-      <log_file alias="Tomcat Manager Log" path="%IDEA_RUN:CATALINA_BASE%/logs/manager.*" />
-      <log_file alias="Tomcat Host Manager Log" path="%IDEA_RUN:CATALINA_BASE%/logs/host-manager.*" />
-      <log_file alias="Tomcat Localhost Access Log" path="%IDEA_RUN:CATALINA_BASE%/logs/localhost_access_log.*" />
-      <predefined_log_file enabled="true" id="Tomcat" />
-      <predefined_log_file enabled="true" id="Tomcat Catalina" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="48706" />
-      </RunnerSettings>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <method v="2">
-        <option name="Make" enabled="true" />
-        <option name="BuildArtifacts" enabled="true">
-          <artifact name="Connectify:war" />
-          <artifact name="Connectify:war exploded" />
-        </option>
       </method>
     </configuration>
     <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
@@ -421,14 +297,111 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.39" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.39" />
-      </set>
-    </attachedChunks>
+    <configuration default="true" type="Application" factoryName="Application">
+      <module name="Connectify" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Connectify web" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat " ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="openjdk-21" show_console_on_std_err="true" show_console_on_std_out="true">
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:1511/home" />
+      <option name="BROWSER_ID" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment>
+        <artifact name="Connectify:war exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/Connectify_war_exploded" />
+          </settings>
+        </artifact>
+        <artifact name="Connectify:war">
+          <settings>
+            <option name="CONTEXT_PATH" value="/Connectify_war" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="d9d1fabe-a331-4ef7-9519-5ebf826fce41" />
+        <option name="DEPLOY_TOMCAT_APPS" value="true" />
+        <option name="HTTP_PORT" value="1511" />
+        <option name="PRESERVE_SESSIONS" value="true" />
+      </server-settings>
+      <output_file path="%IDEA_RUN:TOMCAT_HOME%/logs" is_save="true" />
+      <log_file alias="Tomcat Manager Log" path="%IDEA_RUN:CATALINA_BASE%/logs/manager.*" />
+      <log_file alias="Tomcat Host Manager Log" path="%IDEA_RUN:CATALINA_BASE%/logs/host-manager.*" />
+      <log_file alias="Tomcat Localhost Access Log" path="%IDEA_RUN:CATALINA_BASE%/logs/localhost_access_log.*" />
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="48706" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="Connectify:war" />
+          <artifact name="Connectify:war exploded" />
+        </option>
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

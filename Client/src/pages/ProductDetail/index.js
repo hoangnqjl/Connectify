@@ -319,7 +319,7 @@ function ProductDetail() {
                   <span>Trạng thái</span>
                   <p>{product.status === "instock" ? "Còn hàng" : "Hết hàng"}</p>
                 </div>
-                <div
+                {/* <div
                   className={cx(
                     "infor-product-item",
                     "w-full",
@@ -330,7 +330,7 @@ function ProductDetail() {
                 >
                   <span>Số lượng</span>
                   <p>{product.quantity || "Không có thông tin"}</p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

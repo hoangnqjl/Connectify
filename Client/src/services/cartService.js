@@ -1,7 +1,7 @@
 import request from '../utils/request';
 
 const cartService = {
-  addToCart: async ({ electronicId, quantity, token }) => {
+  addToCart: async ({ electronicId, quantity }) => {
     try {
       const response = await request.post(
         `/carts/add?electronicId=${electronicId}&quantity=${quantity}`,
@@ -18,7 +18,7 @@ const cartService = {
     }
   },
 
-  getCart: async (token) => {
+  getCart: async () => {
     try {
       const response = await request.get('/carts/get');
       return {
