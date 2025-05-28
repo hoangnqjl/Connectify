@@ -23,24 +23,4 @@ public class BrandService {
     public void addBrand(Brand brand) {
         brandRepository.save(brand);
     }
-
-    // Lấy brand theo ID
-    public Optional<Brand> getBrandById(String id) {
-        return brandRepository.findById(id);
-    }
-
-    // Cập nhật brand
-    public Brand updateBrand(Brand brand) {
-        return brandRepository.save(brand);
-    }
-
-    // Xóa brand
-    public void deleteBrand(String id) {
-        brandRepository.deleteById(id);
-    }
-
-    // Kiểm tra brand có tồn tại không
-    public boolean existsById(String id) {
-        return brandRepository.existsById(id);
-    }
 }

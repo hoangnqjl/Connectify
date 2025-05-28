@@ -971,42 +971,25 @@ const adminService = {
 
   getBrandProducts: async (brandId) => {
     try {
-      console.log('🔄 Getting brand products via real API...', brandId);
-      const response = await request.get(`/brands/${brandId}/products`);
-      console.log('✅ Brand products fetched successfully via real API');
-      console.log('📋 Response:', response.data);
+      // Get all electronics and filter by brand
+      const response = await request.get('/electronics');
+      const allProducts = response.data;
+
+      // Filter products by brand ID
+      const brandProducts = allProducts.filter(product =>
+        product.brand && product.brand.brand_id === brandId
+      );
+
+      console.log(`🔍 Found ${brandProducts.length} products for brand ${brandId}`);
 
       return {
         success: true,
-        data: response.data.data || response.data,
-        brand: response.data.brand,
-        totalProducts: response.data.totalProducts
+        data: brandProducts,
       };
     } catch (error) {
-      console.error('❌ Error getting brand products:', error);
-
-      // Fallback to filtering electronics locally
-      try {
-        console.log('🔄 Falling back to local filtering...');
-        const electronicsResponse = await request.get('/electronics');
-        const allProducts = electronicsResponse.data;
-
-        const brandProducts = allProducts.filter(product =>
-          product.brand && product.brand.brand_id === brandId
-        );
-
-        console.log(`🔍 Fallback: Found ${brandProducts.length} products for brand ${brandId}`);
-
-        return {
-          success: true,
-          data: brandProducts,
-          totalProducts: brandProducts.length
-        };
-      } catch (fallbackError) {
-        console.error('❌ Fallback also failed:', fallbackError);
-        const message = error.response?.data?.message || error.response?.data?.error || 'Không thể lấy sản phẩm theo thương hiệu';
-        return { success: false, message };
-      }
+      console.error('Error getting brand products:', error);
+      const message = error.response?.data?.error || 'Không thể lấy sản phẩm theo thương hiệu';
+      return { success: false, message };
     }
   },
 

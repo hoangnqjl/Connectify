@@ -933,80 +933,40 @@ const adminService = {
 
   updateBrand: async (brandId, brandData) => {
     try {
-      await validateAdminAccess();
-      console.log('🔄 Updating brand via real API...', brandId, brandData);
-      const response = await request.put(`/brands/${brandId}`, brandData);
-      console.log('✅ Brand updated successfully via real API');
-      console.log('📋 Response:', response.data);
+      const response = await request.put(`/admin/brands/${brandId}`, brandData);
       return {
         success: true,
         data: response.data,
-        message: response.data.message || 'Cập nhật thương hiệu thành công'
       };
     } catch (error) {
-      console.error('❌ Error updating brand:', error);
-      const message = error.response?.data?.message || error.response?.data?.error || 'Không thể cập nhật thương hiệu';
+      const message = error.response?.data?.error || 'Không thể cập nhật thương hiệu';
       return { success: false, message };
     }
   },
 
   deleteBrand: async (brandId) => {
     try {
-      await validateAdminAccess();
-      console.log('🔄 Deleting brand via real API...', brandId);
-      const response = await request.delete(`/brands/${brandId}`);
-      console.log('✅ Brand deleted successfully via real API');
-      console.log('📋 Response:', response.data);
+      const response = await request.delete(`/admin/brands/${brandId}`);
       return {
         success: true,
         data: response.data,
-        message: response.data.message || 'Xóa thương hiệu thành công'
       };
     } catch (error) {
-      console.error('❌ Error deleting brand:', error);
-      const message = error.response?.data?.message || error.response?.data?.error || 'Không thể xóa thương hiệu';
+      const message = error.response?.data?.error || 'Không thể xóa thương hiệu';
       return { success: false, message };
     }
   },
 
   getBrandProducts: async (brandId) => {
     try {
-      console.log('🔄 Getting brand products via real API...', brandId);
-      const response = await request.get(`/brands/${brandId}/products`);
-      console.log('✅ Brand products fetched successfully via real API');
-      console.log('📋 Response:', response.data);
-
+      const response = await request.get(`/admin/brands/${brandId}/products`);
       return {
         success: true,
-        data: response.data.data || response.data,
-        brand: response.data.brand,
-        totalProducts: response.data.totalProducts
+        data: response.data,
       };
     } catch (error) {
-      console.error('❌ Error getting brand products:', error);
-
-      // Fallback to filtering electronics locally
-      try {
-        console.log('🔄 Falling back to local filtering...');
-        const electronicsResponse = await request.get('/electronics');
-        const allProducts = electronicsResponse.data;
-
-        const brandProducts = allProducts.filter(product =>
-          product.brand && product.brand.brand_id === brandId
-        );
-
-        console.log(`🔍 Fallback: Found ${brandProducts.length} products for brand ${brandId}`);
-
-        return {
-          success: true,
-          data: brandProducts,
-          totalProducts: brandProducts.length
-        };
-      } catch (fallbackError) {
-        console.error('❌ Fallback also failed:', fallbackError);
-        const message = error.response?.data?.message || error.response?.data?.error || 'Không thể lấy sản phẩm theo thương hiệu';
-        return { success: false, message };
-      }
+      const message = error.response?.data?.error || 'Không thể lấy sản phẩm theo thương hiệu';
+      return { success: false, message };
     }
   },
 
@@ -1020,12 +980,11 @@ const adminService = {
       return {
         success: true,
         data: response.data,
-        message: response.data.message || `Thương hiệu "${brandData.brand_name}" đã được thêm thành công`
+        message: `Thương hiệu "${brandData.brand_name}" đã được thêm thành công`
       };
     } catch (error) {
       console.error('❌ Error creating brand:', error);
-      const message = error.response?.data?.message || error.response?.data?.error || 'Không thể tạo thương hiệu';
-      return { success: false, message };
+      // Detailed error logging...
     }
   },
 

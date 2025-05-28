@@ -1,10 +1,8 @@
 package com.qhoang.connectify.controller;
 
 import com.qhoang.connectify.entities.Brand;
-import com.qhoang.connectify.entities.Electronic;
 import com.qhoang.connectify.repository.BrandRepository;
 import com.qhoang.connectify.service.AuthorizationService;
-import com.qhoang.connectify.service.ElectronicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +20,11 @@ public class BrandController {
 
     private final BrandRepository brandRepository;
     private final AuthorizationService authorizationService;
-    private final ElectronicService electronicService;
 
     @Autowired
-    public BrandController(BrandRepository brandRepository, AuthorizationService authorizationService, ElectronicService electronicService) {
+    public BrandController(BrandRepository brandRepository, AuthorizationService authorizationService) {
         this.brandRepository = brandRepository;
         this.authorizationService = authorizationService;
-        this.electronicService = electronicService;
     }
 
     // GET all brands
@@ -47,46 +43,10 @@ public class BrandController {
         // Kiểm tra quyền admin
         if (!authorizationService.hasAdminAccess(authHeader)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Collections.singletonMap("error", "Bạn không có quyền thêm thương hiệu"));
+                    .body("Bạn không có quyền thêm thương hiệu");
         }
-
-        Map<String, Object> response = new HashMap<>();
-
-        // Validation brand_name
-        if (brand.getBrand_name() == null || brand.getBrand_name().trim().isEmpty()) {
-            response.put("error", "Invalid Data");
-            response.put("message", "Tên thương hiệu không được để trống");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-
-        // Tạo brand_id nếu chưa có
-        if (brand.getBrand_id() == null || brand.getBrand_id().trim().isEmpty()) {
-            String brandId = brand.getBrand_name().toLowerCase()
-                    .replaceAll("\\s+", "_")
-                    .replaceAll("[^a-z0-9_]", "")
-                    + "_brand_" + System.currentTimeMillis();
-            brand.setBrand_id(brandId);
-        }
-
-        // Kiểm tra brand_id đã tồn tại chưa
-        if (brandRepository.existsById(brand.getBrand_id())) {
-            response.put("error", "Duplicate ID");
-            response.put("message", "Thương hiệu với ID này đã tồn tại: " + brand.getBrand_id());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-        }
-
-        try {
-            brand.setBrand_name(brand.getBrand_name().trim());
-            Brand savedBrand = brandRepository.save(brand);
-            response.put("success", true);
-            response.put("data", savedBrand);
-            response.put("message", "Thêm thương hiệu thành công");
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            response.put("error", "Create Failed");
-            response.put("message", "Lỗi khi thêm thương hiệu: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+        brandRepository.save(brand);  // Sử dụng save() từ JpaRepository
+        return ResponseEntity.status(HttpStatus.CREATED).body("Brand added successfully");
     }
 
     // GET brand by ID
@@ -183,39 +143,6 @@ public class BrandController {
             response.put("error", "Delete Failed");
             response.put("message", "Không thể xóa thương hiệu này vì đang được sử dụng bởi các sản phẩm");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-        }
-    }
-
-    // GET products by brand ID
-    @GetMapping("/{id}/products")
-    public ResponseEntity<?> getBrandProducts(@PathVariable String id) {
-        Map<String, Object> response = new HashMap<>();
-
-        // Kiểm tra brand có tồn tại không
-        Optional<Brand> brandOptional = brandRepository.findById(id);
-        if (!brandOptional.isPresent()) {
-            response.put("error", "Not Found");
-            response.put("message", "Không tìm thấy thương hiệu với ID: " + id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-
-        try {
-            // Lấy tất cả electronics và filter theo brand
-            List<Electronic> allElectronics = electronicService.getAllElectronics();
-            List<Electronic> brandProducts = allElectronics.stream()
-                    .filter(electronic -> electronic.getBrand() != null &&
-                            electronic.getBrand().getBrand_id().equals(id))
-                    .collect(java.util.stream.Collectors.toList());
-
-            response.put("success", true);
-            response.put("data", brandProducts);
-            response.put("brand", brandOptional.get());
-            response.put("totalProducts", brandProducts.size());
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("error", "Fetch Failed");
-            response.put("message", "Lỗi khi lấy sản phẩm: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 }
